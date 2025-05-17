@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - SendMenfess</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/login.css">
+</head>
+<body>
+    <a href="/" class="home-btn">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <div class="login-container">
+        <div class="login-header">
+            <a href="/" class="text-indigo-600 hover:text-indigo-700">
+                <i class="fas fa-ghost"></i>
+                <h1>Admin Login</h1>
+            </a>
+        </div>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="admin-password">Password</label>
+                <input type="password" id="admin-password" placeholder="Enter admin password" required>
+                <div id="error-message" class="error-message">Invalid password</div>
+            </div>
+            <button type="submit" class="login-btn">
+                <i class="fas fa-lock mr-2"></i>
+                Login
+            </button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 left-0 right-0 text-center p-4">
+        <div class="text-white/70 text-sm">
+            © 2024 SendMenfess - Admin Login
+        </div>
+    </footer>
+
+    <script src="/assets/js/login.js"></script>
+</body>
+</html>

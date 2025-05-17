@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+data/*.json
+!data/messages.example.json
+
+# Editor directories
+.vscode/
+.idea/
+public/data/messages.json

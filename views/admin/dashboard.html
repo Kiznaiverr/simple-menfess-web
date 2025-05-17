@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SendMenfess</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+</head>
+<body>
+    <div id="dashboard-section" class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-indigo-600 to-purple-600">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <a href="/" class="flex items-center space-x-2 text-white hover:opacity-90">
+                            <i class="fas fa-ghost text-2xl"></i>
+                            <h1 class="text-2xl font-bold">SendMenfess</h1>
+                        </a>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="/" class="px-4 py-2 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-600 flex items-center space-x-2">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                        <button id="logout-btn" class="px-4 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 text-gray-700 flex items-center space-x-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-8 flex-grow">
+            <!-- Stats Section -->
+            <div class="dashboard-stats mb-8">
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-gray-500 text-sm font-medium">Total Messages</h3>
+                        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-semibold text-gray-800 mt-2" id="total-messages">0</p>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-gray-500 text-sm font-medium">Today's Messages</h3>
+                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg">
+                            <i class="fas fa-clock"></i>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-semibold text-gray-800 mt-2" id="today-messages">0</p>
+                </div>
+            </div>
+
+            <!-- Messages Table Section -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                            <i class="fas fa-inbox text-indigo-500 mr-2"></i>
+                            Message Management
+                        </h2>
+                        <div class="flex gap-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" id="message-search" 
+                                    class="search-bar pl-10 pr-4 py-2 rounded-lg focus:outline-none"
+                                    placeholder="Search messages...">
+                            </div>
+                            <button id="delete-selected" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 hidden flex items-center space-x-2">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Delete Selected</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="messages-table">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left">
+                                            <input type="checkbox" id="select-all" class="rounded">
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">To</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="messages-table" class="bg-white divide-y divide-gray-200">
+                                    <!-- Messages will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                        <i class="fas fa-ghost text-xl text-indigo-600"></i>
+                        <span class="text-gray-700 font-medium">SendMenfess Admin</span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <span>© 2024 SendMenfess - Admin Dashboard</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 transform transition-all fade-in">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <i class="fas fa-trash text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Confirm Deletion</h3>
+                <p class="text-sm text-gray-500 mb-6" id="delete-message">
+                    Are you sure you want to delete this message?
+                </p>
+                <div class="flex justify-center space-x-3">
+                    <button id="cancel-delete" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                        Cancel
+                    </button>
+                    <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
