@@ -10,7 +10,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from public directory
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use('/data', express.static(path.join(__dirname, 'public/data')));
 
