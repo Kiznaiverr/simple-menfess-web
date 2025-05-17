@@ -30,12 +30,22 @@ cd simple-menfess-web
 npm install
 ```
 
-3. Start the server
+3. Setup environment variables
+```bash
+cp .env.example .env
+```
+Then edit `.env` file with your configuration:
+```env
+ADMIN_PASSWORD=your_admin_password
+PORT=3000
+```
+
+4. Start the server
 ```bash
 npm start
 ```
 
-4. Visit `http://localhost:3000`
+5. Visit `http://localhost:3000`
 
 ## 💻 Tech Stack
 
@@ -59,6 +69,8 @@ sendmenfess/
 │   ├── index.html
 │   ├── explore.html
 │   └── admin/
+├── .env
+├── .env.example
 ├── server.js
 └── package.json
 ```
