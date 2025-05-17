@@ -63,7 +63,7 @@ function displayMessages(messages) {
 
 async function loadMessages() {
     try {
-        const response = await fetch('/api/messages');
+        const response = await fetch('/api/messages'); // Remove localhost:3000
         const data = await response.json();
         
         if (!data || !data.messages) {
@@ -93,7 +93,7 @@ async function loadMessages() {
 
 async function sendMessage(recipient, message) {
     try {
-        const response = await fetch('http://localhost:3000/api/messages', {
+        const response = await fetch('/api/messages', { // Remove localhost:3000
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
