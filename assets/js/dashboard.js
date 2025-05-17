@@ -14,6 +14,7 @@ async function loadMessages() {
         const data = await response.json();
         messages = data.messages;
         displayMessages();
+        updateStats();
     } catch (error) {
         console.error('Error loading messages:', error);
     }
@@ -82,6 +83,7 @@ async function performDelete() {
         if (response.ok) {
             messages = messages.filter(msg => !deleteIds.includes(msg.id));
             displayMessages();
+            updateStats();
         }
     } catch (error) {
         console.error('Error deleting messages:', error);
@@ -89,6 +91,17 @@ async function performDelete() {
         deleteModal.classList.add('hidden');
         deleteIds = [];
     }
+}
+
+function updateStats() {
+    const totalMessages = messages.length;
+    const today = new Date().toDateString();
+    const todayMessages = messages.filter(msg => 
+        new Date(msg.timestamp).toDateString() === today
+    ).length;
+
+    document.getElementById('total-messages').textContent = totalMessages;
+    document.getElementById('today-messages').textContent = todayMessages;
 }
 
 // Add event delegation for checkboxes
@@ -100,7 +113,10 @@ document.addEventListener('click', (e) => {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    loadMessages();
+    loadMessages().then(() => {
+        displayMessages();
+        updateStats();
+    });
     
     // Logout handler
     document.getElementById('logout-btn').addEventListener('click', () => {
