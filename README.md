@@ -38,20 +38,28 @@ Then edit `.env` file with your configuration:
 ```env
 ADMIN_PASSWORD=your_admin_password
 PORT=3000
+MONGODB_URI=your_mongodb_connection_string
+DB_PASSWORD=your_mongodb_password
 ```
 
-4. Start the server
+4. MongoDB Setup
+- Create a MongoDB Atlas account or use local MongoDB
+- Create a new cluster
+- Get your connection string
+- Update the .env file with your MongoDB details
+
+5. Start the server
 ```bash
 npm start
 ```
 
-5. Visit `http://localhost:3000`
+6. Visit `http://localhost:3000`
 
 ## 💻 Tech Stack
 
 - **Frontend**: HTML5, TailwindCSS, JavaScript
 - **Backend**: Node.js, Express
-- **Database**: JSON File System
+- **Database**: MongoDB
 - **Icons**: Font Awesome
 - **Deploy**: Your preferred platform
 
@@ -69,8 +77,10 @@ sendmenfess/
 │   ├── index.html
 │   ├── explore.html
 │   └── admin/
-├── .env
-├── .env.example
+├── models/
+│   └── Message.js     # MongoDB Schema
+├── .env               # Environment variables
+├── .env.example       # Environment variables example
 ├── server.js
 └── package.json
 ```

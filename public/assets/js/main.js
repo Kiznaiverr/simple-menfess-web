@@ -63,9 +63,13 @@ function displayMessages(messages) {
 
 async function loadMessages() {
     try {
-        const response = await fetch('http://localhost:3000/api/messages');
+        const response = await fetch('/api/messages');
         const data = await response.json();
         
+        if (!data || !data.messages) {
+            throw new Error('Invalid data format');
+        }
+
         // Sort all messages by timestamp (newest first)
         const sortedMessages = data.messages.sort((a, b) => 
             new Date(b.timestamp) - new Date(a.timestamp)
@@ -74,25 +78,16 @@ async function loadMessages() {
         // Get latest 6 messages
         const recentMessages = sortedMessages.slice(0, 6);
         
-        // If no new messages, keep showing the last displayed messages
-        if (recentMessages.length === 0 && lastDisplayedMessages.length > 0) {
-            displayMessages(lastDisplayedMessages);
-        } else if (recentMessages.length > 0) {
+        if (recentMessages.length > 0) {
             lastDisplayedMessages = recentMessages;
             displayMessages(recentMessages);
+            updateLastRefresh();
         } else {
-            // No messages at all
             document.getElementById('no-messages').classList.remove('hidden');
         }
-        
-        updateLastRefresh();
     } catch (error) {
         console.error('Error loading messages:', error);
-        if (lastDisplayedMessages.length > 0) {
-            displayMessages(lastDisplayedMessages);
-        } else {
-            document.getElementById('no-messages').classList.remove('hidden');
-        }
+        document.getElementById('no-messages').classList.remove('hidden');
     }
 }
 

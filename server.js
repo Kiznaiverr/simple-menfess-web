@@ -1,10 +1,16 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const fs = require('fs-extra');
+const mongoose = require('mongoose');
+const Message = require('./models/Message');
 require('dotenv').config();
 
 const app = express();
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI.replace('<db_password>', process.env.DB_PASSWORD))
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
 app.use(cors());
@@ -33,35 +39,32 @@ app.get('/dashboard', (req, res) => {
 // API Endpoints
 app.get('/api/messages', async (req, res) => {
     try {
-        const data = await fs.readFile(path.join(__dirname, 'public/data/messages.json'), 'utf8');
-        res.json(JSON.parse(data));
+        const messages = await Message.find()
+            .sort({ timestamp: -1 })
+            .lean(); // Convert to plain JavaScript objects
+        res.json({ 
+            messages: messages.map(msg => ({
+                ...msg,
+                id: msg._id // Map MongoDB _id to id for frontend compatibility
+            }))
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Error reading messages' });
+        console.error('Database error:', error);
+        res.status(500).json({ error: 'Error fetching messages', messages: [] });
     }
 });
 
 app.post('/api/messages', async (req, res) => {
     try {
         const { recipient, message } = req.body;
-        const data = await fs.readFile(path.join(__dirname, 'public/data/messages.json'), 'utf8');
-        const messages = JSON.parse(data);
-        
-        const newMessage = {
-            id: messages.messages.length + 1,
-            recipient: recipient.toLowerCase().replace(/\s+/g, '-'),
+        const newMessage = new Message({
+            recipient: recipient.toLowerCase(),
             recipientName: recipient,
-            message: message,
-            timestamp: new Date().toISOString(),
+            message,
+            timestamp: new Date(),
             isPublic: true
-        };
-        
-        messages.messages.push(newMessage);
-        
-        await fs.writeFile(
-            path.join(__dirname, 'public/data/messages.json'),
-            JSON.stringify(messages, null, 2)
-        );
-        
+        });
+        await newMessage.save();
         res.json(newMessage);
     } catch (error) {
         res.status(500).json({ error: 'Error saving message' });
@@ -70,13 +73,7 @@ app.post('/api/messages', async (req, res) => {
 
 app.delete('/api/messages/:id', async (req, res) => {
     try {
-        const data = await fs.readFile(path.join(__dirname, 'public/data/messages.json'), 'utf8');
-        const json = JSON.parse(data);
-        const id = parseInt(req.params.id);
-
-        json.messages = json.messages.filter(msg => msg.id !== id);
-        
-        await fs.writeFile(path.join(__dirname, 'public/data/messages.json'), JSON.stringify(json, null, 2));
+        await Message.findByIdAndDelete(req.params.id);
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting message' });
@@ -86,12 +83,7 @@ app.delete('/api/messages/:id', async (req, res) => {
 app.delete('/api/messages', async (req, res) => {
     try {
         const { ids } = req.body;
-        const data = await fs.readFile(path.join(__dirname, 'public/data/messages.json'), 'utf8');
-        const json = JSON.parse(data);
-
-        json.messages = json.messages.filter(msg => !ids.includes(msg.id));
-        
-        await fs.writeFile(path.join(__dirname, 'public/data/messages.json'), JSON.stringify(json, null, 2));
+        await Message.deleteMany({ _id: { $in: ids } });
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting messages' });
