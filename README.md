@@ -1,7 +1,7 @@
 # 💌 SendMenfess - Anonymous Message Platform
 
 <div align="center">
-  <img src="public/assets/images/preview.png" alt="SendMenfess Preview" width="100%">
+  <img src="https://pomf2.lain.la/f/xfdr4cp.png" alt="SendMenfess Preview" width="100%">
   
   ![GitHub](https://img.shields.io/github/license/Kiznaiverr/simple-menfess-web)
   ![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)
