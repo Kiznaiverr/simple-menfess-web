@@ -1,124 +1,135 @@
-# 💌 SendMenfess - Anonymous Message Platform
+# 💌 SendMenfess - Anonymous Message Web App
 
 <div align="center">
-  <img src="https://pomf2.lain.la/f/xfdr4cp.png" alt="SendMenfess Preview" width="100%">
+  <img src="https://pomf2.lain.la/f/onfz3s58.png" alt="SendMenfess Preview" width="100%">
   
-  ![GitHub](https://img.shields.io/github/license/Kiznaiverr/simple-menfess-web)
   ![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)
   ![Express Version](https://img.shields.io/badge/express-%5E4.18.2-blue)
+  ![MongoDB](https://img.shields.io/badge/MongoDB-4.4+-green)
 </div>
 
 ## ✨ Features
 
+- 🔒 **100% Anonymous** - No login required for sending messages
 - 🚀 **Real-time Updates** - Messages appear instantly
-- 🔍 **Advanced Search & Filtering** - Find messages easily
-- 📱 **Responsive Design** - Works on all devices
-- 🎨 **Modern UI/UX** - Clean and intuitive interface
-- 🔐 **Admin Dashboard** - Manage messages efficiently
-- 🌙 **Dark Mode** - Easy on the eyes
+- 🔍 **Smart Search** - Search by recipient or message content
+- 📱 **Fully Responsive** - Works perfectly on all devices
+- 🎨 **Modern UI** - Clean and intuitive TailwindCSS interface
+- 🔐 **Admin Panel** - Secure message management dashboard
+- ⚡ **Session Management** - Auto logout after 5 minutes inactivity
 
-## 🛠️ Installation
+## 🚀 Quick Start
 
-1. Clone the repository
+1. Clone and install
 ```bash
 git clone https://github.com/Kiznaiverr/simple-menfess-web.git
 cd simple-menfess-web
-```
-
-2. Install dependencies
-```bash
 npm install
 ```
 
-3. Setup environment variables
-```bash
-cp .env.example .env
-```
-Then edit `.env` file with your configuration:
+2. Create .env file
 ```env
-ADMIN_PASSWORD=your_admin_password
 PORT=3000
-MONGODB_URI=your_mongodb_connection_string
-DB_PASSWORD=your_mongodb_password
+NODE_ENV=development
+MONGODB_URI=your_mongodb_uri
+DB_PASSWORD=your_db_password
+ADMIN_PASSWORD=your_admin_password
+SITE_NAME=SendMenfess
 ```
 
-4. MongoDB Setup
-- Create a MongoDB Atlas account or use local MongoDB
-- Create a new cluster
-- Get your connection string
-- Update the .env file with your MongoDB details
-
-5. Start the server
+3. Start the server
 ```bash
 npm start
 ```
 
-6. Visit `http://localhost:3000`
+Visit `http://your-web.com` 🎉
 
 ## 💻 Tech Stack
 
-- **Frontend**: HTML5, TailwindCSS, JavaScript
-- **Backend**: Node.js, Express
+- **Frontend**: HTML5, TailwindCSS, Vanilla JavaScript
+- **Backend**: Node.js, Express.js
 - **Database**: MongoDB
-- **Icons**: Font Awesome
-- **Deploy**: Your preferred platform
+- **Icons**: Font Awesome 6
+- **Deployment**: Vercel
 
 ## 📂 Project Structure
-
 ```
 sendmenfess/
 ├── public/
-│   ├── assets/
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── images/
-│   └── data/
+│   └── assets/
+│       ├── css/
+│       │   ├── style.css
+│       │   ├── login.css
+│       │   └── dashboard.css
+│       └── js/
+│           ├── main.js
+│           ├── explore.js
+│           └── dashboard.js
 ├── views/
 │   ├── index.html
 │   ├── explore.html
-│   └── admin/
+│   ├── admin/
+│   │   ├── login.html
+│   │   └── dashboard.html
+│   └── errors/
+│       ├── 404.html
+│       └── offline.html
 ├── models/
-│   └── Message.js     # MongoDB Schema
-├── .env               # Environment variables
-├── .env.example       # Environment variables example
+│   └── Message.js
 ├── server.js
+├── .env
 └── package.json
 ```
 
+## 🛡️ Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| PORT | Server port (default: 3000) |
+| MONGODB_URI | MongoDB connection string |
+| DB_PASSWORD | Database password |
+| ADMIN_PASSWORD | Admin dashboard password |
+| NODE_ENV | Environment (development/production) |
+
 ## 🌟 Key Features
 
-### Anonymous Messaging
-- Send messages without revealing identity
-- Real-time message delivery
-- Emoji support
+### For Users
+- Send anonymous messages
+- No registration required
+- Real-time message updates
+- Search & filter messages
+- Mobile-friendly interface
 
-### Message Management
-- Search functionality
-- Date filtering
-- Sort by newest/oldest
-
-### Admin Dashboard
+### For Admins
+- Secure admin dashboard
 - Message moderation
-- Bulk actions
-- Analytics overview
+- Bulk message actions
+- System status monitoring
+- Auto session management
 
-## 📝 License
+## 📱 Mobile Support
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The app is fully responsive and tested on:
+- iOS Safari
+- Android Chrome
+- Mobile Firefox
+- Microsoft Edge Mobile
+
+## 🚀 Deployment
+
+Ready to deploy on:
+- Vercel
+- Heroku
+- Railway
+- Any Node.js hosting
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📞 Contact
-
-Kiznaiverr - [GitHub Profile](https://github.com/Kiznaiverr)
+1. Fork the repo
+2. Create feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add NewFeature'`)
+4. Push to branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request at [https://github.com/Kiznaiverr/simple-menfess-web](https://github.com/Kiznaiverr/simple-menfess-web)
 
 Project Link: [https://github.com/Kiznaiverr/simple-menfess-web](https://github.com/Kiznaiverr/simple-menfess-web)
 
