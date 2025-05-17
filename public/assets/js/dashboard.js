@@ -20,11 +20,11 @@ async function loadMessages() {
     }
 }
 
-function displayMessages() {
+function displayMessages(messagesToShow = messages) {
     const tbody = document.getElementById('messages-table');
     tbody.innerHTML = '';
     
-    messages.forEach(msg => {
+    messagesToShow.forEach(msg => {
         const tr = document.createElement('tr');
         const date = new Date(msg.timestamp);
         
@@ -140,6 +140,20 @@ async function updateSystemInfo() {
 setInterval(updateSystemInfo, 30000);
 updateSystemInfo(); // Initial update
 
+// Add search functionality
+function setupSearch() {
+    const searchInput = document.getElementById('message-search-table');
+    
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filteredMessages = messages.filter(msg => 
+            msg.recipientName.toLowerCase().includes(searchTerm) ||
+            msg.message.toLowerCase().includes(searchTerm)
+        );
+        displayMessages(filteredMessages);
+    });
+}
+
 // Add event delegation for checkboxes
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('message-checkbox')) {
@@ -153,6 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
         displayMessages();
         updateStats();
     });
+    
+    setupSearch(); // Add search initialization
     
     // Logout handler
     document.getElementById('logout-btn').addEventListener('click', () => {
