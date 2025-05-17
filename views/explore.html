@@ -62,7 +62,47 @@
 
         <!-- Messages Grid -->
         <div id="messages-container" class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Messages will be loaded here -->
+            <!-- Message Card Template (will be populated by JS) -->
+            <template id="message-template">
+                <div class="message-card rounded-xl overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="recipient-tag inline-flex items-center px-3 py-1 text-sm font-medium rounded-full">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                <span class="recipient-name">To: Someone</span>
+                            </span>
+                            <span class="message-time flex items-center">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span class="time-text">Just now</span>
+                            </span>
+                        </div>
+                        <div class="content mt-4">
+                            <p class="message-text text-gray-600 leading-relaxed"></p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <button class="action-button text-indigo-500 hover:text-indigo-600">
+                                    <i class="far fa-bookmark"></i>
+                                </button>
+                                <button class="action-button text-purple-500 hover:text-purple-600">
+                                    <i class="far fa-share-square"></i>
+                                </button>
+                            </div>
+                            <span class="text-sm text-gray-400 flex items-center">
+                                <i class="fas fa-user-secret mr-2"></i>
+                                Anonymous
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Loading Placeholder -->
+            <template id="loading-template">
+                <div class="loading-card rounded-xl h-48"></div>
+            </template>
         </div>
 
         <!-- No Results -->

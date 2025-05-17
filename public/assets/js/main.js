@@ -49,11 +49,8 @@ function displayMessages(messages) {
                 </div>
                 <p class="text-gray-600 mt-3">${msg.message}</p>
             </div>
-            <div class="px-6 py-3 bg-gray-50 flex justify-between items-center">
-                <button class="text-gray-400 hover:text-indigo-500 transition">
-                    <i class="far fa-heart"></i>
-                </button>
-                <span class="text-xs text-gray-400">Someone</span>
+            <div class="px-6 py-3 bg-gray-50 flex justify-end items-center">
+                <span class="text-xs text-gray-400">Anonymous</span>
             </div>
         `;
         

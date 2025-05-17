@@ -135,6 +135,29 @@ body::before {
     color: rgba(255, 255, 255, 0.5);
 }
 
+/* Adjust input padding for toggle button */
+.form-group input[type="password"],
+.form-group input[type="text"] {
+    padding-right: 3rem;
+}
+
+/* Password Toggle Button */
+.password-toggle {
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.password-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
 .login-btn {
     width: 100%;
     padding: 0.75rem;
