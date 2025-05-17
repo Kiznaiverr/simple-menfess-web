@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs-extra');
+require('dotenv').config();
 
 const app = express();
 
@@ -98,7 +99,12 @@ app.delete('/api/messages', async (req, res) => {
     }
 });
 
-const PORT = 3000;
+app.get('/api/verify-admin', (req, res) => {
+    const { password } = req.query;
+    res.json({ valid: password === process.env.ADMIN_PASSWORD });
+});
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

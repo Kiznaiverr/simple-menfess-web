@@ -1,2 +1,17 @@
-/node_modules
-/package-lock.json
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+data/*.json
+!data/messages.example.json
+
+# Editor directories
+.vscode/
+.idea/

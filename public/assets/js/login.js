@@ -1,17 +1,24 @@
 const ADMIN_PASSWORD = 'admin123'; // In real app, use proper authentication
 
-document.getElementById('login-form').addEventListener('submit', (e) => {
+async function verifyPassword(password) {
+    try {
+        const response = await fetch(`/api/verify-admin?password=${encodeURIComponent(password)}`);
+        const data = await response.json();
+        return data.valid;
+    } catch (error) {
+        console.error('Error verifying password:', error);
+        return false;
+    }
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const password = document.getElementById('admin-password').value;
-    const errorMessage = document.getElementById('error-message');
     
-    if (password === ADMIN_PASSWORD) {
-        // Store auth state
+    if (await verifyPassword(password)) {
         sessionStorage.setItem('isLoggedIn', 'true');
-        // Redirect to dashboard
         window.location.href = '/dashboard';
     } else {
-        errorMessage.classList.add('visible');
-        setTimeout(() => errorMessage.classList.remove('visible'), 3000);
+        document.getElementById('error-message').classList.add('visible');
     }
 });
