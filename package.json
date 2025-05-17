@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "npm run dev",
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "NODE_ENV=production node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "vercel-build": "echo Building..."
   },
   "keywords": [
     "menfess"

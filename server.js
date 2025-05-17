@@ -7,8 +7,15 @@ require('dotenv').config();
 
 const app = express();
 
+// Environment Configuration
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const MONGODB_URI = process.env.MONGODB_URI.replace('<db_password>', process.env.DB_PASSWORD);
+const BASE_URL = isDevelopment ? 'http://localhost:3000' : process.env.VERCEL_URL;
+
+console.log(`Running in ${isDevelopment ? 'development' : 'production'} mode`);
+
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI.replace('<db_password>', process.env.DB_PASSWORD))
+mongoose.connect(MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -16,6 +23,7 @@ mongoose.connect(process.env.MONGODB_URI.replace('<db_password>', process.env.DB
 app.use(cors());
 app.use(express.json());
 
+// Serve static files
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use('/data', express.static(path.join(__dirname, 'public/data')));
 
@@ -107,5 +115,5 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on ${BASE_URL}`);
 });
