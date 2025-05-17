@@ -181,10 +181,24 @@ body {
 }
 
 /* Responsive Styles */
+@media (max-width: 1024px) {
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .dashboard-stats {
         grid-template-columns: 1fr;
-        padding: 0 1rem;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        margin-bottom: 0;
+    }
+
+    .stat-card:hover {
+        transform: none;
     }
 
     .messages-table {
@@ -192,23 +206,89 @@ body {
         -webkit-overflow-scrolling: touch;
     }
 
-    .stat-card {
-        margin-bottom: 1rem;
-    }
-
-    .delete-btn {
-        opacity: 1;
-    }
-}
-
-@media (max-width: 640px) {
-    .dashboard-header {
-        padding: 1rem;
+    .messages-table table {
+        min-width: 600px;
     }
 
     .messages-table th,
     .messages-table td {
+        white-space: nowrap;
+        padding: 0.75rem;
+    }
+
+    /* Collapsible Quick Actions Panel */
+    .quick-actions-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+        z-index: 40;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .quick-actions-panel.active {
+        transform: translateY(0);
+    }
+
+    .toggle-quick-actions {
+        display: block;
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        z-index: 41;
+    }
+}
+
+@media (max-width: 640px) {
+    .container {
         padding: 0.5rem;
-        font-size: 0.875rem;
+    }
+
+    .dashboard-header {
+        padding: 0.75rem;
+    }
+
+    .header-title {
+        font-size: 1.25rem;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card h3 {
+        font-size: 1.5rem;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-nav a span {
+        display: none;
+    }
+
+    .header-nav a i {
+        margin: 0;
+    }
+
+    .welcome-modal {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .delete-modal {
+        margin: 1rem;
     }
 }

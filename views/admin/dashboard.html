@@ -13,14 +13,14 @@
         <!-- Header -->
         <header class="bg-gradient-to-r from-indigo-600 to-purple-600">
             <div class="container mx-auto px-4 py-4">
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="flex items-center space-x-2">
                         <a href="/" class="flex items-center space-x-2 text-white hover:opacity-90">
                             <i class="fas fa-paper-plane text-2xl"></i>
-                            <h1 class="text-2xl font-bold">SendMenfess</h1>
+                            <h1 class="text-2xl font-bold header-title">SendMenfess</h1>
                         </a>
                     </div>
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 header-actions">
                         <a href="/" class="px-4 py-2 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-600 flex items-center space-x-2">
                             <i class="fas fa-home"></i>
                             <span>Home</span>
@@ -140,7 +140,7 @@
                 </div>
 
                 <!-- Quick Actions Panel -->
-                <div class="space-y-6">
+                <div class="space-y-6 quick-actions-panel lg:relative">
                     <!-- Search and Actions -->
                     <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -250,6 +250,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Quick Actions Toggle Button (Mobile) -->
+    <button class="toggle-quick-actions fixed bottom-4 right-4 p-4 bg-indigo-600 text-white rounded-full shadow-lg lg:hidden">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Add Quick Actions Panel Toggle Script -->
+    <script>
+        const quickActionsPanel = document.querySelector('.quick-actions-panel');
+        const toggleButton = document.querySelector('.toggle-quick-actions');
+
+        toggleButton?.addEventListener('click', () => {
+            quickActionsPanel.classList.toggle('active');
+        });
+    </script>
 
     <script src="/assets/js/dashboard.js"></script>
 </body>
