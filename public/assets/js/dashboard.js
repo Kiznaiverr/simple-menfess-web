@@ -1,6 +1,6 @@
 // Check authentication
 if (!sessionStorage.getItem('isLoggedIn')) {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
 }
 
 let messages = [];
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Logout handler
     document.getElementById('logout-btn').addEventListener('click', () => {
         sessionStorage.removeItem('isLoggedIn');
-        window.location.href = 'login.html';
+        window.location.href = '/login';
     });
 
     // Select all checkbox handler

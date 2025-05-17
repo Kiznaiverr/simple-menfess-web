@@ -6,7 +6,7 @@
     <title>Admin Dashboard - SendMenfess</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
 </head>
 <body>
     <div id="dashboard-section" class="min-h-screen flex flex-col">
@@ -15,11 +15,13 @@
             <div class="container mx-auto px-4 py-4">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center space-x-2">
-                        <i class="fas fa-ghost text-2xl text-white"></i>
-                        <h1 class="text-2xl font-bold text-white">SendMenfess</h1>
+                        <a href="/" class="flex items-center space-x-2 text-white hover:opacity-90">
+                            <i class="fas fa-ghost text-2xl"></i>
+                            <h1 class="text-2xl font-bold">SendMenfess</h1>
+                        </a>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="../index.html" class="px-4 py-2 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-600 flex items-center space-x-2">
+                        <a href="/" class="px-4 py-2 bg-indigo-50 rounded-lg hover:bg-indigo-100 text-indigo-600 flex items-center space-x-2">
                             <i class="fas fa-home"></i>
                             <span>Home</span>
                         </a>
@@ -140,6 +142,6 @@
         </div>
     </div>
 
-    <script src="../assets/js/dashboard.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
 </body>
 </html>
