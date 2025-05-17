@@ -23,9 +23,6 @@ mongoose.connection.on('error', err => {
 app.use(cors());
 app.use(express.json());
 
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-app.use('/data', express.static(path.join(__dirname, 'public/data')));
-
 // View Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/index.html'));
@@ -102,6 +99,10 @@ app.get('/api/verify-admin', (req, res) => {
     res.json({ valid: password === process.env.ADMIN_PASSWORD });
 });
 
+// Static files
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+app.use('/data', express.static(path.join(__dirname, 'public/data')));
+
 // Serve offline page
 app.get('/offline', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/errors/offline.html'));
@@ -112,10 +113,13 @@ app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'views/errors/404.html'));
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// Start server only if not in Vercel
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
 
 // Export for Vercel
 module.exports = app;
