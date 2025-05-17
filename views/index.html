@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SendMenfess - Send Anonymous Messages</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -17,7 +17,7 @@
                     <i class="fas fa-ghost text-2xl"></i>
                     <h1 class="text-2xl font-bold">SendMenfess</h1>
                 </a>
-                <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-4">
                     <a href="/" class="px-4 py-2 rounded-lg hover:bg-white/10 transition flex items-center space-x-2">
                         <i class="fas fa-home"></i>
                         <span>Home</span>
@@ -31,6 +31,23 @@
                         <span>Admin</span>
                     </a>
                 </div>
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-white" id="mobile-menu-button">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-white/10 mt-2 rounded-lg">
+                <a href="/" class="block py-2 text-white hover:bg-white/10">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="/explore" class="block py-2 text-white hover:bg-white/10">
+                    <i class="fas fa-compass mr-2"></i>Explore
+                </a>
+                <a href="/login" class="block py-2 text-white hover:bg-white/10">
+                    <i class="fas fa-lock mr-2"></i>Admin
+                </a>
             </div>
         </div>
     </header>
@@ -57,7 +74,7 @@
                         Your identity stays hidden, but your message reaches their heart ❤️
                     </p>
                 </div>
-                <div class="flex justify-center mt-8 space-x-4">
+                <div class="flex flex-wrap justify-center mt-8 gap-4">
                     <div class="bg-white/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-indigo-100">
                         <i class="fas fa-user-secret text-indigo-500"></i>
                         <span class="text-gray-600 text-sm">100% Anonymous</span>
@@ -69,7 +86,7 @@
                 </div>
             </div>
         </section>
-        
+
         <!-- Message Form -->
         <section class="max-w-2xl mx-auto mb-12">
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-indigo-50 transform hover:scale-[1.02] transition-all duration-300">
@@ -81,7 +98,6 @@
                         <h3 class="text-xl font-bold text-white">Send Secret Message</h3>
                     </div>
                 </div>
-                
                 <form id="message-form" class="p-6 space-y-6">
                     <div class="relative">
                         <label for="recipient" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -91,21 +107,17 @@
                             class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                             placeholder="Who's the lucky recipient?" required>
                     </div>
-                    
                     <div class="relative">
                         <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-heart text-indigo-500 mr-2"></i>Your Message:
                         </label>
-                        <div class="relative">
-                            <textarea id="message" rows="4" 
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none"
-                                placeholder="Express your feelings..." required></textarea>
-                            <div class="absolute bottom-3 right-3 text-gray-400 text-sm">
-                                <i class="fas fa-lock mr-1"></i>Anonymous
-                            </div>
+                        <textarea id="message" rows="4" 
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none"
+                            placeholder="Express your feelings..." required></textarea>
+                        <div class="absolute bottom-3 right-3 text-gray-400 text-sm">
+                            <i class="fas fa-lock mr-1"></i>Anonymous
                         </div>
                     </div>
-                    
                     <div class="flex justify-end items-center space-x-4 pt-2">
                         <a href="/explore" 
                             class="group px-6 py-3 border-2 border-indigo-600 text-indigo-600 font-medium rounded-xl hover:bg-indigo-50 transition-all duration-200 flex items-center space-x-2">
@@ -124,8 +136,8 @@
 
         <!-- Messages Section -->
         <section class="relative">
-            <div class="flex justify-between items-center mb-8">
-                <div class="flex items-center space-x-3">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
                     <span class="bg-gradient-to-r from-indigo-500 to-purple-500 p-2 rounded-lg">
                         <i class="fas fa-clock text-white text-xl"></i>
                     </span>
@@ -206,5 +218,10 @@
 
     <!-- Scripts -->
     <script src="/assets/js/main.js"></script>
+    <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>

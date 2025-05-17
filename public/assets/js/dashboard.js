@@ -146,4 +146,15 @@ document.addEventListener('DOMContentLoaded', () => {
             showDeleteModal(selectedIds, true);
         }
     });
+
+    // Welcome modal handler
+    const welcomeModal = document.getElementById('welcome-modal');
+    const welcomeClose = document.getElementById('welcome-close');
+    
+    welcomeClose.addEventListener('click', () => {
+        welcomeModal.style.animation = 'fadeOut 0.3s forwards';
+        setTimeout(() => {
+            welcomeModal.classList.add('hidden');
+        }, 300);
+    });
 });

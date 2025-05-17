@@ -119,6 +119,26 @@
         </footer>
     </div>
 
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 transform transition-all scale-up">
+            <div class="text-center">
+                <div class="welcome-icon-wrapper mx-auto mb-6">
+                    <i class="fas fa-crown text-4xl text-yellow-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
+                    Welcome Back, Admin!
+                </h2>
+                <p class="text-gray-600 mb-6">
+                    You now have full access to manage all messages and monitor the dashboard.
+                </p>
+                <button id="welcome-close" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all duration-200 transform hover:scale-105">
+                    Let's Get Started
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Delete Confirmation Modal -->
     <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 transform transition-all fade-in">

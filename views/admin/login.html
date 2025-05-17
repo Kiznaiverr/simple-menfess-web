@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="/assets/css/login.css">
 </head>
 <body>
+    <!-- Background Bubbles -->
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
     <a href="/" class="home-btn">
         <i class="fas fa-home"></i>
         <span>Home</span>
@@ -22,8 +27,22 @@
         </div>
         <form id="login-form">
             <div class="form-group">
+                <input type="text" 
+                       name="username" 
+                       id="admin-username" 
+                       autocomplete="username" 
+                       class="hidden"
+                       aria-hidden="true"
+                       tabindex="-1">
+            </div>
+            <div class="form-group">
                 <label for="admin-password">Password</label>
-                <input type="password" id="admin-password" placeholder="Enter admin password" required>
+                <input type="password" 
+                       id="admin-password" 
+                       name="password"
+                       placeholder="Enter admin password" 
+                       autocomplete="current-password" 
+                       required>
                 <div id="error-message" class="error-message">Invalid password</div>
             </div>
             <button type="submit" class="login-btn">
