@@ -158,6 +158,60 @@ body {
     body {
         font-size: 14px;
     }
+
+    .search-filters {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .search-filters > div {
+        width: 100%;
+    }
+
+    #search-messages {
+        width: 100%;
+    }
+
+    #messages-container {
+        grid-template-columns: 1fr;
+    }
+
+    .message-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Mobile Navigation Styles */
+@media (max-width: 767px) {
+    #nav-links {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        margin-top: 1rem;
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+        width: 100%;
+    }
+
+    #nav-links a {
+        display: block;
+        padding: 0.75rem 1rem;
+        margin: 0.25rem 0;
+        border-radius: 0.5rem;
+    }
+
+    #nav-links a:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    #mobile-menu-button {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    #mobile-menu-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
 }
 
 @media (max-width: 640px) {
@@ -168,5 +222,31 @@ body {
     
     .message-card {
         margin-bottom: 1rem;
+        padding: 1rem;
+    }
+
+    .search-filters input,
+    .search-filters button {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    #date-filter {
+        max-width: 120px;
+    }
+
+    .recipient-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .message-time {
+        font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    #messages-container {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

@@ -11,24 +11,29 @@
 <body class="min-h-screen flex flex-col">
     <!-- Header -->
     <header class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex justify-between items-center">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-wrap justify-between items-center">
                 <a href="/" class="flex items-center space-x-2 hover:opacity-80 transition">
                     <i class="fas fa-paper-plane text-2xl"></i>
                     <h1 class="text-2xl font-bold">SendMenfess</h1>
                 </a>
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="px-4 py-2 rounded-lg hover:bg-white/10 transition flex items-center space-x-2">
+                <div class="flex items-center md:hidden">
+                    <button id="mobile-menu-button" class="text-white p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+                <div id="nav-links" class="hidden w-full md:flex md:w-auto md:items-center space-x-4 mt-4 md:mt-0">
+                    <a href="/" class="block py-2 md:py-0 px-4 rounded-lg hover:bg-white/10 transition">
                         <i class="fas fa-home"></i>
-                        <span>Home</span>
+                        <span class="ml-2">Home</span>
                     </a>
-                    <a href="/explore" class="px-4 py-2 bg-white/10 rounded-lg flex items-center space-x-2">
+                    <a href="/explore" class="block py-2 md:py-0 px-4 bg-white/10 rounded-lg">
                         <i class="fas fa-compass"></i>
-                        <span>Explore</span>
+                        <span class="ml-2">Explore</span>
                     </a>
-                    <a href="/login" class="px-4 py-2 rounded-lg hover:bg-white/10 transition flex items-center space-x-2">
+                    <a href="/login" class="block py-2 md:py-0 px-4 rounded-lg hover:bg-white/10 transition">
                         <i class="fas fa-lock"></i>
-                        <span>Admin</span>
+                        <span class="ml-2">Admin</span>
                     </a>
                 </div>
             </div>
@@ -38,22 +43,25 @@
     <main class="container mx-auto px-4 py-8 flex-grow">
         <!-- Search and Filter Section -->
         <div class="max-w-4xl mx-auto mb-8">
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="flex flex-col md:flex-row gap-4">
+            <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
+                <div class="flex flex-col md:flex-row gap-4 search-filters">
                     <div class="flex-1">
                         <div class="relative">
                             <input type="text" id="search-messages" 
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 placeholder="Search messages...">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="flex gap-4">
-                        <input type="date" id="date-filter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <button id="sort-date" class="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <div class="flex gap-2 md:gap-4">
+                        <input type="date" id="date-filter" 
+                            class="px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <button id="sort-date" 
+                            class="flex items-center space-x-2 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg hover:bg-gray-50">
                             <i class="fas fa-sort-amount-down"></i>
+                            <span class="hidden md:inline">Sort</span>
                         </button>
                     </div>
                 </div>
@@ -61,7 +69,7 @@
         </div>
 
         <!-- Messages Grid -->
-        <div id="messages-container" class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="messages-container" class="grid gap-4 md:gap-6">
             <!-- Message Card Template (will be populated by JS) -->
             <template id="message-template">
                 <div class="message-card rounded-xl overflow-hidden">
@@ -129,5 +137,21 @@
     </footer>
 
     <script src="/assets/js/explore.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const navLinks = document.getElementById('nav-links');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            navLinks.classList.toggle('hidden');
+        });
+
+        // Hide menu on window resize if it gets to desktop size
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) { // 768px is the md breakpoint
+                navLinks.classList.remove('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
