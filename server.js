@@ -10,7 +10,7 @@ const app = express();
 // Environment Configuration
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const MONGODB_URI = process.env.MONGODB_URI.replace('<db_password>', process.env.DB_PASSWORD);
-const BASE_URL = isDevelopment ? 'http://localhost:3000' : process.env.VERCEL_URL;
+const BASE_URL = isDevelopment ? 'http://localhost:3000' : `https://${process.env.VERCEL_URL}`;
 
 console.log(`Running in ${isDevelopment ? 'development' : 'production'} mode`);
 
@@ -20,7 +20,10 @@ mongoose.connect(MONGODB_URI)
     .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: isDevelopment ? 'http://localhost:3000' : process.env.VERCEL_URL,
+    credentials: true
+}));
 app.use(express.json());
 
 // Serve static files

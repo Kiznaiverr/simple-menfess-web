@@ -93,7 +93,7 @@ async function loadMessages() {
 
 async function sendMessage(recipient, message) {
     try {
-        const response = await fetch('http://localhost:3000/api/messages', {
+        const response = await fetch('/api/messages', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
