@@ -10,7 +10,7 @@ const deleteMessage = document.getElementById('delete-message');
 
 async function loadMessages() {
     try {
-        const response = await fetch('../data/messages.json');
+        const response = await fetch('/api/messages');
         const data = await response.json();
         messages = data.messages;
         displayMessages();
@@ -30,7 +30,7 @@ function displayMessages() {
         
         tr.innerHTML = `
             <td class="px-6 py-4">
-                <input type="checkbox" class="message-checkbox rounded" data-id="${msg.id}">
+                <input type="checkbox" class="message-checkbox rounded" data-id="${msg._id}">
             </td>
             <td class="px-6 py-4 text-sm text-gray-900">${msg.recipientName}</td>
             <td class="px-6 py-4 text-sm text-gray-500">${msg.message}</td>
@@ -44,7 +44,7 @@ function displayMessages() {
                 })}
             </td>
             <td class="px-6 py-4 text-sm">
-                <button class="text-red-600 hover:text-red-900" onclick="showDeleteModal(${msg.id})">
+                <button class="text-red-600 hover:text-red-900" onclick="showDeleteModal('${msg._id}')">
                     <i class="fas fa-trash"></i>
                 </button>
             </td>
@@ -74,16 +74,14 @@ function showDeleteModal(ids, isMultiple = false) {
 
 async function performDelete() {
     try {
-        const response = await fetch('http://localhost:3000/api/messages', {
+        const response = await fetch('/api/messages', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ids: deleteIds })
         });
 
         if (response.ok) {
-            messages = messages.filter(msg => !deleteIds.includes(msg.id));
-            displayMessages();
-            updateStats();
+            await loadMessages(); // Reload messages after delete
         }
     } catch (error) {
         console.error('Error deleting messages:', error);
@@ -143,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update delete button click handler
     document.getElementById('delete-selected')?.addEventListener('click', () => {
         const selectedIds = Array.from(document.querySelectorAll('.message-checkbox:checked'))
-            .map(checkbox => parseInt(checkbox.dataset.id));
+            .map(checkbox => checkbox.dataset.id);
         if (selectedIds.length > 0) {
             showDeleteModal(selectedIds, true);
         }
