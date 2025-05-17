@@ -3,6 +3,61 @@ if (!sessionStorage.getItem('isLoggedIn')) {
     window.location.href = '/login';
 }
 
+// Add session management constants and variables
+const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
+const WARNING_TIME = 1 * 60 * 1000; // Show warning 1 minute before timeout
+let sessionTimer;
+let warningTimer;
+let lastActivity = Date.now();
+
+// Add session timeout management
+function resetSessionTimer() {
+    lastActivity = Date.now();
+    clearTimeout(sessionTimer);
+    clearTimeout(warningTimer);
+    
+    // Set new timers
+    warningTimer = setTimeout(showSessionWarning, SESSION_TIMEOUT - WARNING_TIME);
+    sessionTimer = setTimeout(endSession, SESSION_TIMEOUT);
+}
+
+function showSessionWarning() {
+    // Create and show warning notification
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow-lg z-50';
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <p>Your session will expire in 1 minute due to inactivity.</p>
+        </div>
+    `;
+    document.body.appendChild(notification);
+
+    // Remove notification after 5 seconds
+    setTimeout(() => notification.remove(), 5000);
+}
+
+function endSession() {
+    // Show session timeout modal
+    const sessionModal = document.getElementById('session-modal');
+    sessionModal.classList.remove('hidden');
+    
+    // Clear session storage
+    sessionStorage.removeItem('isLoggedIn');
+    
+    // Redirect to login after 3 seconds
+    setTimeout(() => {
+        window.location.href = '/login';
+    }, 3000);
+}
+
+// Track user activity
+function trackActivity() {
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(event => {
+        document.addEventListener(event, resetSessionTimer);
+    });
+}
+
 let messages = [];
 let deleteIds = [];
 const deleteModal = document.getElementById('delete-modal');
@@ -163,6 +218,16 @@ document.addEventListener('click', (e) => {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Check authentication first
+    if (!sessionStorage.getItem('isLoggedIn')) {
+        window.location.href = '/login';
+        return;
+    }
+
+    // Initialize session management
+    resetSessionTimer();
+    trackActivity();
+
     loadMessages().then(() => {
         displayMessages();
         updateStats();

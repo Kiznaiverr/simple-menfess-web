@@ -245,6 +245,25 @@
         </div>
     </div>
 
+    <!-- Session Timeout Modal -->
+    <div id="session-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 transform transition-all fade-in">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
+                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Session Expired</h3>
+                <p class="text-sm text-gray-500 mb-6">
+                    Your session has expired due to inactivity. Please login again to continue.
+                </p>
+                <button onclick="window.location.href='/login'" 
+                    class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all duration-200">
+                    Login Again
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Quick Actions Toggle Button (Mobile) -->
     <button class="toggle-quick-actions fixed bottom-4 right-4 p-4 bg-indigo-600 text-white rounded-full shadow-lg lg:hidden">
         <i class="fas fa-bars"></i>
