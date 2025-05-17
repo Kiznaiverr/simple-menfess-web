@@ -1,5 +1,3 @@
-const ADMIN_PASSWORD = 'admin123'; // In real app, use proper authentication
-
 async function verifyPassword(password) {
     try {
         const response = await fetch(`/api/verify-admin?password=${encodeURIComponent(password)}`);
