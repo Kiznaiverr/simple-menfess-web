@@ -8,9 +8,16 @@ require('dotenv').config();
 const app = express();
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI.replace('<db_password>', process.env.DB_PASSWORD))
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect(process.env.MONGODB_URI.replace('<db_password>', process.env.DB_PASSWORD), {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000
+}).catch(console.error);
+
+// Handle MongoDB connection errors
+mongoose.connection.on('error', err => {
+    console.error('MongoDB connection error:', err);
+});
 
 // Middleware
 app.use(cors());
@@ -109,3 +116,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+// Export for Vercel
+module.exports = app;

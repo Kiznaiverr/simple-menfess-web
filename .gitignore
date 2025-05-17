@@ -3,7 +3,8 @@ node_modules/
 package-lock.json
 
 # Environment variables
-
+.env
+.env.local
 
 # Logs
 *.log
@@ -17,3 +18,8 @@ data/*.json
 .vscode/
 .idea/
 public/data/messages.json
+
+# Vercel
+.vercel
+.build
+dist/
