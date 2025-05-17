@@ -102,6 +102,44 @@ function updateStats() {
     document.getElementById('today-messages').textContent = todayMessages;
 }
 
+// Add system info update function
+async function updateSystemInfo() {
+    try {
+        const response = await fetch('/api/system-info');
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Update CPU Load if available
+            const cpuContainer = document.getElementById('cpu-load-container');
+            const cpuBar = document.getElementById('cpu-load-bar');
+            if (data.cpuLoad) {
+                cpuContainer.classList.remove('hidden');
+                const cpuPercentage = Math.round(data.cpuLoad * 100);
+                cpuBar.style.width = `${cpuPercentage}%`;
+            } else {
+                cpuContainer.classList.add('hidden');
+            }
+            
+            // Update Memory Usage if available
+            const memoryContainer = document.getElementById('memory-usage-container');
+            const memoryBar = document.getElementById('memory-usage-bar');
+            if (data.memoryUsage) {
+                memoryContainer.classList.remove('hidden');
+                const memoryPercentage = Math.round(data.memoryUsage * 100);
+                memoryBar.style.width = `${memoryPercentage}%`;
+            } else {
+                memoryContainer.classList.add('hidden');
+            }
+        }
+    } catch (error) {
+        console.error('Error updating system info:', error);
+    }
+}
+
+// Update system info every 30 seconds
+setInterval(updateSystemInfo, 30000);
+updateSystemInfo(); // Initial update
+
 // Add event delegation for checkboxes
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('message-checkbox')) {

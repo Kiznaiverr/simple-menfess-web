@@ -16,7 +16,7 @@
                 <div class="flex justify-between items-center">
                     <div class="flex items-center space-x-2">
                         <a href="/" class="flex items-center space-x-2 text-white hover:opacity-90">
-                            <i class="fas fa-ghost text-2xl"></i>
+                            <i class="fas fa-paper-plane text-2xl"></i>
                             <h1 class="text-2xl font-bold">SendMenfess</h1>
                         </a>
                     </div>
@@ -35,68 +35,157 @@
         </header>
 
         <main class="container mx-auto px-4 py-8 flex-grow">
-            <!-- Stats Section -->
-            <div class="dashboard-stats mb-8">
-                <div class="stat-card">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-gray-500 text-sm font-medium">Total Messages</h3>
-                        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg">
-                            <i class="fas fa-envelope"></i>
-                        </span>
+            <!-- Quick Stats Cards -->
+            <div class="dashboard-stats grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card group">
+                    <div class="flex items-center justify-between p-6">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Total Messages</p>
+                            <h3 class="text-3xl font-bold text-gray-800" id="total-messages">0</h3>
+                        </div>
+                        <div class="bg-indigo-100 group-hover:bg-indigo-200 transition-colors p-4 rounded-xl">
+                            <i class="fas fa-envelope text-2xl text-indigo-600"></i>
+                        </div>
                     </div>
-                    <p class="text-2xl font-semibold text-gray-800 mt-2" id="total-messages">0</p>
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                 </div>
-                <div class="stat-card">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-gray-500 text-sm font-medium">Today's Messages</h3>
-                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg">
-                            <i class="fas fa-clock"></i>
-                        </span>
+
+                <div class="stat-card group">
+                    <div class="flex items-center justify-between p-6">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Today's Messages</p>
+                            <h3 class="text-3xl font-bold text-gray-800" id="today-messages">0</h3>
+                        </div>
+                        <div class="bg-purple-100 group-hover:bg-purple-200 transition-colors p-4 rounded-xl">
+                            <i class="fas fa-clock text-2xl text-purple-600"></i>
+                        </div>
                     </div>
-                    <p class="text-2xl font-semibold text-gray-800 mt-2" id="today-messages">0</p>
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                </div>
+
+                <div class="stat-card group">
+                    <div class="flex items-center justify-between p-6">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Active Recipients</p>
+                            <h3 class="text-3xl font-bold text-gray-800">12</h3>
+                        </div>
+                        <div class="bg-pink-100 group-hover:bg-pink-200 transition-colors p-4 rounded-xl">
+                            <i class="fas fa-users text-2xl text-pink-600"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-pink-500 to-rose-500 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                </div>
+
+                <div class="stat-card group">
+                    <div class="flex items-center justify-between p-6">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">System Status</p>
+                            <h3 class="text-xl font-bold text-green-600">Online</h3>
+                        </div>
+                        <div class="bg-green-100 group-hover:bg-green-200 transition-colors p-4 rounded-xl">
+                            <i class="fas fa-server text-2xl text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                 </div>
             </div>
 
-            <!-- Messages Table Section -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                            <i class="fas fa-inbox text-indigo-500 mr-2"></i>
-                            Message Management
-                        </h2>
-                        <div class="flex gap-4">
-                            <div class="relative">
-                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input type="text" id="message-search" 
-                                    class="search-bar pl-10 pr-4 py-2 rounded-lg focus:outline-none"
-                                    placeholder="Search messages...">
+            <!-- Messages Management Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Messages Table -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                                    <i class="fas fa-inbox text-indigo-500 mr-2"></i>
+                                    Message Management
+                                </h2>
+                                <div class="flex gap-4">
+                                    <div class="relative">
+                                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <input type="text" id="message-search" 
+                                            class="search-bar pl-10 pr-4 py-2 rounded-lg focus:outline-none"
+                                            placeholder="Search messages...">
+                                    </div>
+                                    <button id="delete-selected" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 hidden flex items-center space-x-2">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <span>Delete Selected</span>
+                                    </button>
+                                </div>
                             </div>
-                            <button id="delete-selected" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 hidden flex items-center space-x-2">
+                            
+                            <div class="messages-table">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left">
+                                                    <input type="checkbox" id="select-all" class="rounded">
+                                                </th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">To</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="messages-table" class="bg-white divide-y divide-gray-200">
+                                            <!-- Messages will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Panel -->
+                <div class="space-y-6">
+                    <!-- Search and Actions -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                            Quick Actions
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="relative">
+                                <input type="text" id="message-search" 
+                                    class="w-full pl-10 pr-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Search messages...">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                            <button id="delete-selected" 
+                                class="w-full px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center space-x-2 hidden">
                                 <i class="fas fa-trash-alt"></i>
                                 <span>Delete Selected</span>
                             </button>
                         </div>
                     </div>
-                    
-                    <div class="messages-table">
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left">
-                                            <input type="checkbox" id="select-all" class="rounded">
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">To</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="messages-table" class="bg-white divide-y divide-gray-200">
-                                    <!-- Messages will be loaded here -->
-                                </tbody>
-                            </table>
+
+                    <!-- System Info -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                            System Info
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Last Updated</span>
+                                <span class="text-gray-800" id="last-update">Just now</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Database Status</span>
+                                <span class="text-green-600 flex items-center">
+                                    <i class="fas fa-circle text-xs mr-1"></i>
+                                    Connected
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500">Server Load</span>
+                                <div class="w-32 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,7 +197,7 @@
             <div class="container mx-auto px-4 py-6">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="flex items-center space-x-2 mb-4 md:mb-0">
-                        <i class="fas fa-ghost text-xl text-indigo-600"></i>
+                        <i class="fas fa-paper-plane text-xl text-indigo-600"></i>
                         <span class="text-gray-700 font-medium">SendMenfess Admin</span>
                     </div>
                     <div class="text-sm text-gray-500">
@@ -133,7 +222,7 @@
                     You now have full access to manage all messages and monitor the dashboard.
                 </p>
                 <button id="welcome-close" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all duration-200 transform hover:scale-105">
-                    Let's Get Started
+                    Done
                 </button>
             </div>
         </div>
