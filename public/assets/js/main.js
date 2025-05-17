@@ -115,6 +115,15 @@ async function sendMessage(recipient, message) {
     }
 }
 
+// Offline detection
+window.addEventListener('offline', () => {
+    window.location.href = '/offline';
+});
+
+window.addEventListener('online', () => {
+    window.location.reload();
+});
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const messageForm = document.getElementById('message-form');

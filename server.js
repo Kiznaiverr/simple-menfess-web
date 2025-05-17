@@ -103,6 +103,16 @@ app.get('/api/verify-admin', (req, res) => {
     res.json({ valid: password === process.env.ADMIN_PASSWORD });
 });
 
+// Serve offline page
+app.get('/offline', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views/errors/offline.html'));
+});
+
+// 404 handler - must be last route
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'views/errors/404.html'));
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
