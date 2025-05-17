@@ -7,6 +7,22 @@
       "message": "haii sayang",
       "timestamp": "2025-05-17T02:07:08.421Z",
       "isPublic": true
+    },
+    {
+      "id": 2,
+      "recipient": "kiznavierr",
+      "recipientName": "Kiznavierr",
+      "message": "p for plerr",
+      "timestamp": "2025-05-17T03:04:18.978Z",
+      "isPublic": true
+    },
+    {
+      "id": 3,
+      "recipient": "ckptw",
+      "recipientName": "ckptw",
+      "message": "asknakdka",
+      "timestamp": "2025-05-17T03:04:25.284Z",
+      "isPublic": true
     }
   ]
 }

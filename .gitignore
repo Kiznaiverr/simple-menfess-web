@@ -16,3 +16,4 @@ data/*.json
 # Editor directories
 .vscode/
 .idea/
+public/data/messages.json
