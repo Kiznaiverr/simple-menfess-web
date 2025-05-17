@@ -106,6 +106,32 @@ app.get('/api/verify-admin', (req, res) => {
     res.json({ valid: password === process.env.ADMIN_PASSWORD });
 });
 
+// Add system info endpoint
+app.get('/api/system-info', (req, res) => {
+    try {
+        const systemInfo = {
+            lastUpdate: new Date().toISOString(),
+            dbStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+            serverLoad: {
+                value: Math.floor(Math.random() * 30), // Simulated load 0-30%
+                color: 'green'
+            }
+        };
+
+        // Adjust color based on load
+        if (systemInfo.serverLoad.value > 20) {
+            systemInfo.serverLoad.color = 'yellow';
+        } else if (systemInfo.serverLoad.value > 10) {
+            systemInfo.serverLoad.color = 'blue';
+        }
+
+        res.json(systemInfo);
+    } catch (error) {
+        console.error('Error fetching system info:', error);
+        res.status(500).json({ error: 'Error fetching system info' });
+    }
+});
+
 // Serve offline page
 app.get('/offline', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/errors/offline.html'));

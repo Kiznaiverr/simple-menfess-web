@@ -3,11 +3,18 @@ node_modules/
 package-lock.json
 
 # Environment variables
-
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
 
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Runtime data
 data/*.json
@@ -16,4 +23,27 @@ data/*.json
 # Editor directories
 .vscode/
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Build output
+dist/
+build/
+out/
+.next/
+.nuxt/
+.vuepress/dist
+
+# Cache directories
+.cache/
+.temp/
+.vercel/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Database
 public/data/messages.json

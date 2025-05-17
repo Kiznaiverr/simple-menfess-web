@@ -169,15 +169,15 @@
                             </div>
                             <div class="flex justify-between items-center text-sm">
                                 <span class="text-gray-500">Database Status</span>
-                                <span class="text-green-600 flex items-center">
+                                <span id="db-status" class="text-green-600 flex items-center">
                                     <i class="fas fa-circle text-xs mr-1"></i>
-                                    Connected
+                                    <span>Connected</span>
                                 </span>
                             </div>
                             <div class="flex justify-between items-center text-sm">
                                 <span class="text-gray-500">Server Load</span>
-                                <div class="w-32 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-500 h-2 rounded-full" style="width: 15%"></div>
+                                <div class="w-32 bg-gray-200 rounded-full h-2 overflow-hidden">
+                                    <div id="server-load" class="h-2 rounded-full transition-all duration-500" style="width: 15%"></div>
                                 </div>
                             </div>
                         </div>
