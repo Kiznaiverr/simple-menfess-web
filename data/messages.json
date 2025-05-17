@@ -1,0 +1,20 @@
+{
+  "messages": [
+    {
+      "id": 1,
+      "recipient": "sorawrr",
+      "recipientName": "sorawrr",
+      "message": "haii",
+      "timestamp": "2025-05-17T01:39:17.904Z",
+      "isPublic": true
+    },
+    {
+      "id": 2,
+      "recipient": "sora",
+      "recipientName": "sora",
+      "message": "alloow",
+      "timestamp": "2025-05-17T01:40:22.495Z",
+      "isPublic": true
+    }
+  ]
+}

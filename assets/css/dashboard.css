@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.messages-table {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ...rest of dashboard specific styles... */
