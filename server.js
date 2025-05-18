@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const db = require('./services/db.service');
+const os = require('os');
 require('dotenv').config();
 
 const app = express();
@@ -130,21 +131,27 @@ app.get('/api/verify-admin', (req, res) => {
 // Add system info endpoint
 app.get('/api/system-info', (req, res) => {
     try {
+        const cpus = os.cpus();
+        const totalMem = os.totalmem();
+        const freeMem = os.freemem();
+        
         const systemInfo = {
             lastUpdate: new Date().toISOString(),
             dbStatus: db.isConnected() ? 'connected' : 'disconnected',
-            serverLoad: {
-                value: Math.floor(Math.random() * 30), // Simulated load 0-30%
-                color: 'green'
+            cpu: {
+                cores: cpus.length,
+                model: cpus[0].model,
+                speed: cpus[0].speed,
+                usage: process.cpuUsage(),
+                load: os.loadavg()[0].toFixed(2) // 1 minute load average
+            },
+            memory: {
+                total: (totalMem / (1024 * 1024 * 1024)).toFixed(2), // GB
+                free: (freeMem / (1024 * 1024 * 1024)).toFixed(2), // GB
+                used: ((totalMem - freeMem) / (1024 * 1024 * 1024)).toFixed(2), // GB
+                usagePercent: (((totalMem - freeMem) / totalMem) * 100).toFixed(1)
             }
         };
-
-        // Adjust color based on load
-        if (systemInfo.serverLoad.value > 20) {
-            systemInfo.serverLoad.color = 'yellow';
-        } else if (systemInfo.serverLoad.value > 10) {
-            systemInfo.serverLoad.color = 'blue';
-        }
 
         res.json(systemInfo);
     } catch (error) {

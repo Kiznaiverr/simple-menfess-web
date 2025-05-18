@@ -156,17 +156,34 @@
                         </div>
                     </div>
 
-                    <!-- System Info -->
+                    <!-- System Info Card -->
                     <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                            System Info
+                            <i class="fas fa-microchip text-blue-500 mr-2"></i>
+                            System Resources
                         </h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-500">Last Updated</span>
-                                <span class="text-gray-800" id="last-update">Just now</span>
+                        <div class="space-y-4">
+                            <!-- CPU Load -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-sm text-gray-500" id="cpu-text">CPU Load: 0%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="cpu-load" class="h-2 rounded-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
+                                </div>
                             </div>
+
+                            <!-- RAM Usage -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-sm text-gray-500" id="ram-text">RAM: 0GB / 0GB (0%)</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="ram-usage" class="h-2 rounded-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Database Status -->
                             <div class="flex justify-between items-center text-sm">
                                 <span class="text-gray-500">Database Status</span>
                                 <span id="db-status" class="text-green-600 flex items-center">
@@ -174,11 +191,10 @@
                                     <span>Connected</span>
                                 </span>
                             </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-500">Server Load</span>
-                                <div class="w-32 bg-gray-200 rounded-full h-2 overflow-hidden">
-                                    <div id="server-load" class="h-2 rounded-full transition-all duration-500" style="width: 15%"></div>
-                                </div>
+
+                            <!-- Last Update -->
+                            <div class="text-xs text-gray-500 text-right">
+                                Last updated: <span id="last-update">Just now</span>
                             </div>
                         </div>
                     </div>

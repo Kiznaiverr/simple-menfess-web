@@ -158,45 +158,58 @@ function updateStats() {
 }
 
 // Update system info function
-function updateSystemInfo() {
+async function updateSystemInfo() {
     try {
-        // Get server load bar element
-        const serverLoadBar = document.getElementById('server-load');
-        // Get database status element
-        const dbStatus = document.getElementById('db-status');
-        // Get last update element
-        const lastUpdate = document.getElementById('last-update');
+        const response = await fetch('/api/system-info');
+        const data = await response.json();
 
-        // Simulate server load (random between 10-30%)
-        const loadPercentage = Math.floor(Math.random() * 20) + 10;
-        serverLoadBar.style.width = `${loadPercentage}%`;
+        // Update CPU info
+        const cpuBar = document.getElementById('cpu-load');
+        const cpuText = document.getElementById('cpu-text');
+        const cpuLoad = parseFloat(data.cpu.load);
+        cpuBar.style.width = `${Math.min(cpuLoad * 10, 100)}%`;
+        cpuText.textContent = `CPU Load: ${cpuLoad}%`;
 
-        // Set color based on load
-        if (loadPercentage > 25) {
-            serverLoadBar.className = 'h-2 rounded-full bg-yellow-500 transition-all duration-500';
-        } else if (loadPercentage > 15) {
-            serverLoadBar.className = 'h-2 rounded-full bg-blue-500 transition-all duration-500';
+        // Set CPU bar color based on load
+        if (cpuLoad > 80) {
+            cpuBar.className = 'h-2 rounded-full bg-red-500 transition-all duration-500';
+        } else if (cpuLoad > 50) {
+            cpuBar.className = 'h-2 rounded-full bg-yellow-500 transition-all duration-500';
         } else {
-            serverLoadBar.className = 'h-2 rounded-full bg-green-500 transition-all duration-500';
+            cpuBar.className = 'h-2 rounded-full bg-green-500 transition-all duration-500';
         }
 
-        // Update last update time
-        const now = new Date();
-        lastUpdate.textContent = now.toLocaleTimeString();
+        // Update RAM usage
+        const ramBar = document.getElementById('ram-usage');
+        const ramText = document.getElementById('ram-text');
+        const ramUsage = parseFloat(data.memory.usagePercent);
+        ramBar.style.width = `${ramUsage}%`;
+        ramText.textContent = `RAM: ${data.memory.used}GB / ${data.memory.total}GB (${ramUsage}%)`;
 
-        // Update database status (using message fetch status)
-        const isConnected = messages.length >= 0;
-        dbStatus.innerHTML = isConnected ? 
+        // Set RAM bar color based on usage
+        if (ramUsage > 80) {
+            ramBar.className = 'h-2 rounded-full bg-red-500 transition-all duration-500';
+        } else if (ramUsage > 50) {
+            ramBar.className = 'h-2 rounded-full bg-yellow-500 transition-all duration-500';
+        } else {
+            ramBar.className = 'h-2 rounded-full bg-green-500 transition-all duration-500';
+        }
+
+        // Update database status
+        const dbStatus = document.getElementById('db-status');
+        dbStatus.innerHTML = data.dbStatus === 'connected' ? 
             '<i class="fas fa-circle text-xs mr-1 text-green-500"></i><span>Connected</span>' : 
             '<i class="fas fa-circle text-xs mr-1 text-red-500"></i><span>Disconnected</span>';
 
+        // Update last refresh time
+        document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
     } catch (error) {
         console.error('Error updating system info:', error);
     }
 }
 
-// Update system info every 30 seconds
-setInterval(updateSystemInfo, 30000);
+// Update system info every 5 seconds instead of 30
+setInterval(updateSystemInfo, 5000);
 updateSystemInfo(); // Initial update
 
 // Add search functionality
