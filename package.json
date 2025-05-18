@@ -24,7 +24,8 @@
     "mongoose": "^8.1.1",
     "os-utils": "^0.0.14",
     "cookie-parser": "^1.4.6",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "express-useragent": "^1.0.15"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
