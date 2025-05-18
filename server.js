@@ -68,6 +68,15 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/admin/dashboard.html'));
 });
 
+// Legal Routes
+app.get('/privacy', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views/legal/privacy.html'));
+});
+
+app.get('/terms', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views/legal/terms.html'));
+});
+
 // API Endpoints
 app.get('/api/messages', async (req, res) => {
     try {
