@@ -3,20 +3,33 @@ const Message = require('../models/Message');
 
 class DatabaseService {
     constructor() {
-        this.dbType = 'MongoDB';
+        this._isConnected = false;
+        this.retryAttempts = 3;
+        this.retryDelay = 1000;
     }
 
     async connect() {
+        if (!process.env.MONGODB_URI) {
+            throw new Error('MongoDB URI is not defined');
+        }
+
         try {
-            if (!process.env.MONGODB_URI || !process.env.MONGODB_URI.startsWith('mongodb+srv://')) {
-                throw new Error('Invalid or missing MongoDB URI');
-            }
-            await mongoose.connect(process.env.MONGODB_URI);
+            const options = {
+                maxPoolSize: 10,
+                serverSelectionTimeoutMS: 5000,
+                socketTimeoutMS: 45000,
+                family: 4,
+                // Removed deprecated options: useNewUrlParser and useUnifiedTopology
+            };
+
+            await mongoose.connect(process.env.MONGODB_URI, options);
+            this._isConnected = true;
             console.log('✅ Connected to MongoDB successfully');
             return true;
         } catch (error) {
-            console.error('❌ MongoDB connection error:', error.message);
-            throw error; // No fallback, just throw the error
+            console.error('❌ MongoDB connection error:', error);
+            this._isConnected = false;
+            throw error;
         }
     }
 
@@ -38,8 +51,19 @@ class DatabaseService {
     }
 
     isConnected() {
-        return mongoose.connection.readyState === 1;
+        return this._isConnected && mongoose.connection.readyState === 1;
     }
 }
+
+// Add connection event listeners
+mongoose.connection.on('disconnected', () => {
+    console.log('❌ MongoDB disconnected');
+    DatabaseService._isConnected = false;
+});
+
+mongoose.connection.on('connected', () => {
+    console.log('✅ MongoDB reconnected');
+    DatabaseService._isConnected = true;
+});
 
 module.exports = new DatabaseService();
