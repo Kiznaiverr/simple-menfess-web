@@ -6,8 +6,6 @@ body {
 }
 
 .message-card {
-    display: flex;
-    flex-direction: column;
     backface-visibility: hidden;
     transform-origin: center;
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -34,7 +32,6 @@ body {
 }
 
 .message-card .content {
-    flex-grow: 1;
     transition: all 0.3s ease;
 }
 
@@ -181,40 +178,6 @@ body {
 
     .message-card {
         margin-bottom: 1rem;
-    }
-
-    /* Mobile Quick Actions Panel */
-    .quick-actions-panel {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 1rem;
-        z-index: 40;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-        border-top: 1px solid #e5e7eb;
-        border-radius: 1.5rem 1.5rem 0 0;
-        box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-
-    .quick-actions-panel.active {
-        transform: translateY(0);
-    }
-
-    .toggle-quick-actions {
-        z-index: 41;
-    }
-
-    /* System Resources order in mobile panel */
-    .quick-actions-panel > div:nth-child(2) {
-        order: 1;
-    }
-    .quick-actions-panel > div:first-child {
-        order: 2;
     }
 }
 
