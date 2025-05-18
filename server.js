@@ -11,15 +11,13 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const BASE_URL = isDevelopment ? 'http://localhost:3000' : `https://${process.env.VERCEL_URL}`;
 
 console.log(`Running in ${isDevelopment ? 'development' : 'production'} mode`);
+console.log(`Server running on ${BASE_URL}`);
 
 // Initialize database connection
 db.connect()
-    .then(() => {
-        console.log(`Database initialized: ${db.useMongoDB ? 'MongoDB' : 'Local JSON'}`);
-    })
     .catch(err => {
-        console.error('Database initialization error:', err);
-        process.exit(1);
+        console.error('❌ Database initialization error:', err);
+        // Don't exit process, continue running to show maintenance page
     });
 
 // Middleware
@@ -28,6 +26,26 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+
+// Add maintenance middleware - place this before other routes
+app.use((req, res, next) => {
+    // Only check maintenance mode, remove db connection check
+    if (process.env.MAINTENANCE_MODE === 'true' && !req.path.includes('/assets/')) {
+        return res.sendFile(path.join(__dirname, 'views/errors/maintenance.html'));
+    }
+    next();
+});
+
+// API error handling middleware
+app.use('/api/*', (req, res, next) => {
+    if (!db.isConnected()) {
+        return res.status(503).json({ 
+            error: 'Service temporarily unavailable',
+            status: 'error'
+        });
+    }
+    next();
+});
 
 // Serve static files
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));

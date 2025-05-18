@@ -93,15 +93,49 @@ sendmenfess/
 └── package.json
 ```
 
+## 🔧 System Features
+
+### Maintenance Mode
+Set maintenance mode through environment variable:
+```env
+MAINTENANCE_MODE=true  # Enable maintenance mode
+MAINTENANCE_MODE=false # Disable maintenance mode
+```
+
+When maintenance mode is enabled:
+- All routes redirect to maintenance page
+- Static assets remain accessible
+- Admin can still access dashboard
+
+### Error Handling
+The system includes smart error handling:
+
+- **Database Connection:**
+  - Shows popup for temporary issues
+  - Auto-retry connection
+  - User-friendly error messages
+
+- **Error Types:**
+  - Database Connection Issues
+  - Network Problems
+  - System Maintenance
+  - Service Unavailable
+
+### System Status
+- Real-time connection monitoring
+- Automatic error reporting
+- Status indicators in admin dashboard
+
 ## 🛡️ Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| PORT | Server port (default: 3000) |
-| MONGODB_URI | MongoDB connection string |
-| DB_PASSWORD | Database password |
-| ADMIN_PASSWORD | Admin dashboard password |
-| NODE_ENV | Environment (development/production) |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| PORT | Server port (default: 3000) | 3000 |
+| MONGODB_URI | MongoDB connection string | - |
+| DB_PASSWORD | Database password | - |
+| ADMIN_PASSWORD | Admin dashboard password | - |
+| NODE_ENV | Environment (development/production) | development |
+| MAINTENANCE_MODE | Enable/disable maintenance mode | false |
 
 ## 🌟 Key Features
 

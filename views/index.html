@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
     <title>SendMenfess - Send Anonymous Messages</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -226,11 +226,13 @@
     </div>
 
     <!-- Scripts -->
+    <script src="/assets/js/db-error-popup.js"></script>
     <script src="/assets/js/main.js"></script>
     <script>
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
     </script>
+    <script src="/assets/js/error-popup.js"></script>
 </body>
 </html>

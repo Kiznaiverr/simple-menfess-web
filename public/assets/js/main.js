@@ -61,6 +61,12 @@ function displayMessages(messages) {
 async function loadMessages() {
     try {
         const response = await fetch('/api/messages');
+        if (!response.ok) {
+            if (response.status === 503) {
+                showDbErrorPopup();
+            }
+            throw new Error('Network response was not ok');
+        }
         const data = await response.json();
         
         if (!data || !data.messages) {
@@ -83,7 +89,8 @@ async function loadMessages() {
             document.getElementById('no-messages').classList.remove('hidden');
         }
     } catch (error) {
-        console.error('Error loading messages:', error);
+        console.error('Error:', error);
+        showDbErrorPopup();
         document.getElementById('no-messages').classList.remove('hidden');
     }
 }
