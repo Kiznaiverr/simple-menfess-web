@@ -69,11 +69,11 @@
         </div>
 
         <!-- Messages Grid -->
-        <div id="messages-container" class="grid gap-4 md:gap-6">
-            <!-- Message Card Template (will be populated by JS) -->
+        <div id="messages-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto">
+            <!-- Message Card Template -->
             <template id="message-template">
-                <div class="message-card rounded-xl overflow-hidden">
-                    <div class="p-6">
+                <div class="message-card bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6 flex-grow">
                         <div class="flex justify-between items-start mb-4">
                             <span class="recipient-tag inline-flex items-center px-3 py-1 text-sm font-medium rounded-full">
                                 <i class="fas fa-paper-plane mr-2"></i>
@@ -84,8 +84,8 @@
                                 <span class="time-text">Just now</span>
                             </span>
                         </div>
-                        <div class="content mt-4">
-                            <p class="message-text text-gray-600 leading-relaxed"></p>
+                        <div class="content mt-4 h-full">
+                            <p class="message-text text-gray-600 leading-relaxed break-words"></p>
                         </div>
                     </div>
                     <div class="card-actions">

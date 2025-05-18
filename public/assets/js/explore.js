@@ -60,7 +60,7 @@ function displayMessages(messages) {
     messages.forEach(msg => {
         const date = new Date(msg.timestamp);
         const card = document.createElement('div');
-        card.className = 'message-card bg-white rounded-xl shadow-md overflow-hidden';
+        card.className = 'message-card bg-white rounded-xl shadow-md overflow-hidden h-full';
         card.innerHTML = `
             <div class="p-6">
                 <div class="flex justify-between items-start mb-2">

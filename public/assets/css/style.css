@@ -6,6 +6,8 @@ body {
 }
 
 .message-card {
+    display: flex;
+    flex-direction: column;
     backface-visibility: hidden;
     transform-origin: center;
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -32,6 +34,7 @@ body {
 }
 
 .message-card .content {
+    flex-grow: 1;
     transition: all 0.3s ease;
 }
 
