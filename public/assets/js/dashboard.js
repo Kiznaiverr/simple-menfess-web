@@ -166,14 +166,14 @@ async function updateSystemInfo() {
         // Update CPU info
         const cpuBar = document.getElementById('cpu-load');
         const cpuText = document.getElementById('cpu-text');
-        const cpuLoad = parseFloat(data.cpu.load);
-        cpuBar.style.width = `${Math.min(cpuLoad * 10, 100)}%`;
-        cpuText.textContent = `CPU Load: ${cpuLoad}%`;
+        const cpuUsage = parseFloat(data.cpu.usage);
+        cpuBar.style.width = `${cpuUsage}%`;
+        cpuText.textContent = `CPU Load: ${cpuUsage}%`;
 
-        // Set CPU bar color based on load
-        if (cpuLoad > 80) {
+        // Set CPU bar color
+        if (cpuUsage > 80) {
             cpuBar.className = 'h-2 rounded-full bg-red-500 transition-all duration-500';
-        } else if (cpuLoad > 50) {
+        } else if (cpuUsage > 50) {
             cpuBar.className = 'h-2 rounded-full bg-yellow-500 transition-all duration-500';
         } else {
             cpuBar.className = 'h-2 rounded-full bg-green-500 transition-all duration-500';
@@ -201,6 +201,30 @@ async function updateSystemInfo() {
             '<i class="fas fa-circle text-xs mr-1 text-green-500"></i><span>Connected</span>' : 
             '<i class="fas fa-circle text-xs mr-1 text-red-500"></i><span>Disconnected</span>';
 
+        // Update Database Stats
+        if (data.database) {
+            const dbSizeText = document.getElementById('db-size-text');
+            const dbStorageBar = document.getElementById('db-storage-bar');
+            const dbCollections = document.getElementById('db-collections');
+            const dbObjects = document.getElementById('db-objects');
+
+            dbSizeText.textContent = `${data.database.size} / ${data.database.maxSize}`;
+            dbStorageBar.style.width = `${data.database.usagePercent}%`;
+            dbCollections.textContent = data.database.collections;
+            dbObjects.textContent = data.database.objects;
+
+            // Show warning only when storage is critical
+            const usedSpace = parseFloat(data.database.usagePercent);
+            if (usedSpace > 90) {
+                showStorageWarning('Critical: Database storage is almost full! Please manage your data.');
+                dbStorageBar.className = 'h-2 rounded-full bg-red-500 transition-all duration-500';
+            } else if (usedSpace > 80) {
+                dbStorageBar.className = 'h-2 rounded-full bg-yellow-500 transition-all duration-500';
+            } else {
+                dbStorageBar.className = 'h-2 rounded-full bg-blue-500 transition-all duration-500';
+            }
+        }
+
         // Update last refresh time
         document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
     } catch (error) {
@@ -208,8 +232,22 @@ async function updateSystemInfo() {
     }
 }
 
-// Update system info every 5 seconds instead of 30
-setInterval(updateSystemInfo, 5000);
+// Add storage warning function
+function showStorageWarning(message) {
+    const warning = document.createElement('div');
+    warning.className = 'fixed top-4 right-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow-lg z-50';
+    warning.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <p>${message}</p>
+        </div>
+    `;
+    document.body.appendChild(warning);
+    setTimeout(() => warning.remove(), 5000);
+}
+
+// Update system info every 2 seconds for better responsiveness
+setInterval(updateSystemInfo, 2000);
 updateSystemInfo(); // Initial update
 
 // Add search functionality

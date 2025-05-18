@@ -17,6 +17,7 @@
 - 🎨 **Modern UI** - Clean and intuitive TailwindCSS interface
 - 🔐 **Admin Panel** - Secure message management dashboard
 - ⚡ **Session Management** - Auto logout after 5 minutes inactivity
+- 📊 **Storage Monitor** - MongoDB Free Tier storage monitoring
 
 ## 🚀 Quick Start
 
@@ -107,6 +108,15 @@ The system includes smart error handling:
 - Real-time connection monitoring
 - Automatic error reporting
 - Status indicators in admin dashboard
+- MongoDB storage usage tracking (512MB limit)
+- Storage usage warnings at 90%
+
+### Storage Management
+- Visual storage indicators
+- Storage limit monitoring
+- Usage threshold alerts
+- Manual data management tools
+- Real-time storage stats
 
 ## 🛡️ Environment Variables
 

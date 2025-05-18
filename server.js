@@ -3,6 +3,8 @@ const path = require('path');
 const cors = require('cors');
 const db = require('./services/db.service');
 const os = require('os');
+const osUtils = require('os-utils');
+const mongoose = require('mongoose'); // Added mongoose for MongoDB stats
 require('dotenv').config();
 
 const app = express();
@@ -140,28 +142,72 @@ app.post('/api/verify-admin', (req, res) => {
     }
 });
 
-// Add system info endpoint
-app.get('/api/system-info', (req, res) => {
+// Add CPU monitoring
+let startTime = Date.now();
+let startUsage = process.cpuUsage();
+
+function getCPUUsage() {
+    const now = Date.now();
+    const end = process.cpuUsage(startUsage);
+    const diff = now - startTime;
+
+    const percentage = 100 * (end.user + end.system) / (diff * 1000);
+    
+    // Reset measurements
+    startTime = now;
+    startUsage = process.cpuUsage();
+    
+    return Math.min(100, Math.round(percentage));
+}
+
+const MONGODB_FREE_TIER_LIMIT = 512; // 512MB limit for free tier
+
+app.get('/api/system-info', async (req, res) => {
     try {
-        const cpus = os.cpus();
+        const cpuUsage = getCPUUsage();
         const totalMem = os.totalmem();
         const freeMem = os.freemem();
+
+        // Get MongoDB stats
+        const dbStats = await mongoose.connection.db.stats();
+        
+        // Convert bytes to appropriate units (KB, MB, GB)
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+        }
+
+        const dataSize = dbStats.dataSize + dbStats.indexSize;
+        const maxSize = MONGODB_FREE_TIER_LIMIT * 1024 * 1024; // Convert MB to bytes
         
         const systemInfo = {
             lastUpdate: new Date().toISOString(),
             dbStatus: db.isConnected() ? 'connected' : 'disconnected',
             cpu: {
-                cores: cpus.length,
-                model: cpus[0].model,
-                speed: cpus[0].speed,
-                usage: process.cpuUsage(),
-                load: os.loadavg()[0].toFixed(2) // 1 minute load average
+                cores: os.cpus().length,
+                model: os.cpus()[0].model,
+                speed: os.cpus()[0].speed,
+                usage: cpuUsage,
+                load: os.loadavg()[0].toFixed(2)
             },
             memory: {
-                total: (totalMem / (1024 * 1024 * 1024)).toFixed(2), // GB
-                free: (freeMem / (1024 * 1024 * 1024)).toFixed(2), // GB
-                used: ((totalMem - freeMem) / (1024 * 1024 * 1024)).toFixed(2), // GB
+                total: (totalMem / (1024 * 1024 * 1024)).toFixed(2),
+                free: (freeMem / (1024 * 1024 * 1024)).toFixed(2),
+                used: ((totalMem - freeMem) / (1024 * 1024 * 1024)).toFixed(2),
                 usagePercent: (((totalMem - freeMem) / totalMem) * 100).toFixed(1)
+            },
+            database: {
+                size: formatBytes(dataSize),
+                storage: formatBytes(maxSize),
+                collections: dbStats.collections,
+                indexes: dbStats.indexes,
+                objects: dbStats.objects,
+                freeSpace: ((maxSize - dataSize) / maxSize * 100).toFixed(1),
+                maxSize: `${MONGODB_FREE_TIER_LIMIT} MB`,
+                usagePercent: ((dataSize / maxSize) * 100).toFixed(1)
             }
         };
 

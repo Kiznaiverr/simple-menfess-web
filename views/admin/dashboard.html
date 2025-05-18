@@ -183,6 +183,29 @@
                                 </div>
                             </div>
 
+                            <!-- Database Stats -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-sm text-gray-500">DB Storage</span>
+                                    <span class="text-sm text-gray-500" id="db-size-text">0 MB / 0 MB</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="db-storage-bar" class="h-2 rounded-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Database Info -->
+                            <div class="grid grid-cols-2 gap-2 mt-2 text-sm">
+                                <div class="bg-gray-50 p-2 rounded-lg">
+                                    <span class="text-gray-500">Collections</span>
+                                    <span id="db-collections" class="float-right font-medium text-gray-700">0</span>
+                                </div>
+                                <div class="bg-gray-50 p-2 rounded-lg">
+                                    <span class="text-gray-500">Objects</span>
+                                    <span id="db-objects" class="float-right font-medium text-gray-700">0</span>
+                                </div>
+                            </div>
+
                             <!-- Database Status -->
                             <div class="flex justify-between items-center text-sm">
                                 <span class="text-gray-500">Database Status</span>
