@@ -18,14 +18,16 @@ console.log(`Server running on ${BASE_URL}`);
 
 // Initialize database connection
 db.connect()
+    .then(() => {
+        console.log('✅ Database connected successfully');
+    })
     .catch(err => {
-        console.error('❌ Database initialization error:', err);
-        // Don't exit process, continue running to show maintenance page
+        console.error('❌ Database connection error:', err);
     });
 
 // Middleware
 app.use(cors({
-    origin: isDevelopment ? 'http://localhost:3000' : process.env.VERCEL_URL,
+    origin: '*', // Allow all origins in production
     credentials: true
 }));
 app.use(express.json());
@@ -40,14 +42,20 @@ app.use((req, res, next) => {
 });
 
 // API error handling middleware
-app.use('/api/*', (req, res, next) => {
-    if (!db.isConnected()) {
+app.use('/api/*', async (req, res, next) => {
+    try {
+        if (!db.isConnected()) {
+            // Try to reconnect
+            await db.connect();
+        }
+        next();
+    } catch (error) {
         return res.status(503).json({ 
-            error: 'Service temporarily unavailable',
-            status: 'error'
+            error: 'Database connection error',
+            status: 'error',
+            message: 'Please try again later'
         });
     }
-    next();
 });
 
 // Serve static files

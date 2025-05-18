@@ -63,12 +63,16 @@ async function loadMessages() {
         const response = await fetch('/api/messages');
         if (!response.ok) {
             if (response.status === 503) {
-                showDbErrorPopup();
+                // Show retryable error
+                const retryAfter = 5;
+                showErrorPopup(`Connection error. Retrying in ${retryAfter} seconds...`);
+                setTimeout(loadMessages, retryAfter * 1000);
+                return;
             }
             throw new Error('Network response was not ok');
         }
+
         const data = await response.json();
-        
         if (!data || !data.messages) {
             throw new Error('Invalid data format');
         }
@@ -90,9 +94,22 @@ async function loadMessages() {
         }
     } catch (error) {
         console.error('Error:', error);
-        showDbErrorPopup();
         document.getElementById('no-messages').classList.remove('hidden');
+        showErrorPopup('Unable to load messages. Please try again later.');
     }
+}
+
+function showErrorPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg z-50';
+    popup.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <p>${message}</p>
+        </div>
+    `;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 5000);
 }
 
 async function sendMessage(recipient, message) {
