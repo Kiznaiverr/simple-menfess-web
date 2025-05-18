@@ -5,6 +5,8 @@ const db = require('./services/db.service');
 const os = require('os');
 const osUtils = require('os-utils');
 const mongoose = require('mongoose'); // Added mongoose for MongoDB stats
+const Stats = require('./models/Stats');
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
 const app = express();
@@ -39,6 +41,35 @@ app.use((req, res, next) => {
         return res.sendFile(path.join(__dirname, 'views/errors/maintenance.html'));
     }
     next();
+});
+
+// Add visitor tracking middleware
+app.use(async (req, res, next) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let stats = await Stats.findOne({ date: { $gte: today } });
+        if (!stats) {
+            stats = new Stats();
+        }
+
+        // Generate or get visitor ID
+        const visitorId = req.cookies.visitorId || uuidv4();
+        res.cookie('visitorId', visitorId, { maxAge: 365 * 24 * 60 * 60 * 1000 });
+
+        // Update stats
+        stats.pageViews++;
+        if (!stats.visitors.includes(visitorId)) {
+            stats.visitors.push(visitorId);
+            stats.uniqueVisitors = stats.visitors.length;
+        }
+
+        await stats.save();
+        next();
+    } catch (error) {
+        next();
+    }
 });
 
 // API error handling middleware
@@ -217,6 +248,16 @@ app.get('/api/system-info', async (req, res) => {
                 maxSize: `${MONGODB_FREE_TIER_LIMIT} MB`,
                 usagePercent: ((dataSize / maxSize) * 100).toFixed(1)
             }
+        };
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const stats = await Stats.findOne({ date: { $gte: today } });
+        
+        systemInfo.stats = {
+            pageViews: stats?.pageViews || 0,
+            uniqueVisitors: stats?.uniqueVisitors || 0,
+            todayVisitors: stats?.visitors.length || 0
         };
 
         res.json(systemInfo);

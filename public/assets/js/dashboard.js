@@ -152,9 +152,15 @@ function updateStats() {
     const todayMessages = messages.filter(msg => 
         new Date(msg.timestamp).toDateString() === today
     ).length;
+    const uniqueRecipients = new Set(messages.map(msg => msg.recipient)).size;
 
+    // Update visitor stats
     document.getElementById('total-messages').textContent = totalMessages;
     document.getElementById('today-messages').textContent = todayMessages;
+    document.getElementById('active-recipients').textContent = uniqueRecipients;
+    document.getElementById('total-visitors').textContent = data.stats.uniqueVisitors;
+    document.getElementById('today-visitors').textContent = data.stats.todayVisitors;
+    document.getElementById('page-views').textContent = data.stats.pageViews;
 }
 
 // Update system info function
