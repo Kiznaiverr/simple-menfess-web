@@ -215,22 +215,66 @@ body::before {
     .login-container {
         margin: 1rem;
         padding: 1.5rem;
+        width: calc(100% - 2rem);
+        max-width: 100%;
     }
 
     .home-btn {
-        top: 10px;
-        left: 10px;
+        top: 1rem;
+        left: 1rem;
         padding: 0.5rem 1rem;
         font-size: 0.875rem;
     }
 
+    .login-header i {
+        font-size: 2rem;
+    }
+
+    .login-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .form-group input {
+        padding: 0.625rem 0.875rem;
+        font-size: 1rem;
+    }
+
+    .login-btn {
+        padding: 0.625rem;
+    }
+
+    /* Prevent text zoom on mobile */
     body {
-        padding: 10px;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    /* Ensure form elements are easily tappable */
+    input, 
+    button {
+        min-height: 44px;
+    }
+
+    /* Adjust bubbles for mobile */
+    .bubble {
+        display: none;
+    }
+
+    /* Improve touch targets */
+    .password-toggle {
+        padding: 0.75rem;
+        min-width: 44px;
+        min-height: 44px;
     }
 }
 
 @media (max-height: 600px) {
     .login-container {
-        margin-top: 4rem;
+        margin-top: 1rem;
+        transform: none;
+    }
+
+    body::before {
+        opacity: 0.5;
     }
 }
