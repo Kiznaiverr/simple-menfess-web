@@ -1,22 +1,28 @@
 async function verifyPassword(password) {
     try {
-        const response = await fetch(`/api/verify-admin?password=${encodeURIComponent(password)}`);
+        const response = await fetch('/api/verify-admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
         const data = await response.json();
         return data.valid;
-    } catch (error) {
-        console.error('Error verifying password:', error);
-        return false;
+    } catch {
+        return false; // Silent fail, no error logging
     }
 }
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const password = document.getElementById('admin-password').value;
+    const errorMsg = document.getElementById('error-message');
     
     if (await verifyPassword(password)) {
         sessionStorage.setItem('isLoggedIn', 'true');
         window.location.href = '/dashboard';
     } else {
-        document.getElementById('error-message').classList.add('visible');
+        errorMsg.classList.add('visible');
+        // Clear password field on error
+        document.getElementById('admin-password').value = '';
     }
 });

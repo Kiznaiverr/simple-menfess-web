@@ -123,9 +123,21 @@ app.delete('/api/messages', async (req, res) => {
     }
 });
 
-app.get('/api/verify-admin', (req, res) => {
-    const { password } = req.query;
-    res.json({ valid: password === process.env.ADMIN_PASSWORD });
+app.post('/api/verify-admin', (req, res) => {
+    try {
+        const { password } = req.body;
+        // Use constant-time comparison
+        const isValid = require('crypto').timingSafeEqual(
+            Buffer.from(password || ''),
+            Buffer.from(process.env.ADMIN_PASSWORD)
+        );
+        
+        // Generic response
+        res.json({ valid: isValid });
+    } catch {
+        // Generic error response
+        res.status(401).json({ valid: false });
+    }
 });
 
 // Add system info endpoint
