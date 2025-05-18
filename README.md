@@ -27,29 +27,16 @@ cd simple-menfess-web
 npm install
 ```
 
-2. Database Configuration
-```env
-# Use MongoDB (true/false)
-USE_MONGODB=false     # true for MongoDB, false for local JSON
+2. Set up environment variables
+```bash
+# Copy example environment file
+cp .env.example .env
 
-# If using MongoDB:
-MONGODB_URI=your_mongodb_uri
-DB_PASSWORD=your_db_password
-
-# Local JSON will be stored in data/database.json if USE_MONGODB=false
+# Edit .env with your configuration
+nano .env
 ```
 
-3. Create .env file
-```env
-PORT=3000
-NODE_ENV=development
-MONGODB_URI=your_mongodb_uri
-DB_PASSWORD=your_db_password
-ADMIN_PASSWORD=your_admin_password
-SITE_NAME=SendMenfess
-```
-
-4. Start the server
+3. Start the server
 ```bash
 npm start
 ```
@@ -96,16 +83,11 @@ sendmenfess/
 ## 🔧 System Features
 
 ### Maintenance Mode
-Set maintenance mode through environment variable:
-```env
-MAINTENANCE_MODE=true  # Enable maintenance mode
-MAINTENANCE_MODE=false # Disable maintenance mode
-```
-
-When maintenance mode is enabled:
-- All routes redirect to maintenance page
-- Static assets remain accessible
-- Admin can still access dashboard
+Enable maintenance mode by setting `MAINTENANCE_MODE=true` in .env:
+- Redirects all routes to maintenance page
+- Keeps static assets accessible
+- Allows admin access
+- Useful for system updates
 
 ### Error Handling
 The system includes smart error handling:
@@ -128,14 +110,16 @@ The system includes smart error handling:
 
 ## 🛡️ Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port (default: 3000) | 3000 |
-| MONGODB_URI | MongoDB connection string | - |
-| DB_PASSWORD | Database password | - |
-| ADMIN_PASSWORD | Admin dashboard password | - |
-| NODE_ENV | Environment (development/production) | development |
-| MAINTENANCE_MODE | Enable/disable maintenance mode | false |
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| PORT | Server port number | 3000 | No |
+| NODE_ENV | Environment mode | development | No |
+| MONGODB_URI | MongoDB connection string | - | Yes |
+| DB_PASSWORD | Database password | - | Yes |
+| ADMIN_PASSWORD | Admin dashboard access | - | Yes |
+| SITE_NAME | Website name | SendMenfess | No |
+| SITE_URL | Website URL | - | Yes |
+| MAINTENANCE_MODE | Enable maintenance mode | false | No |
 
 ## 🌟 Key Features
 
