@@ -1,23 +1,26 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const Message = require('./models/Message');
+const db = require('./services/db.service');
 require('dotenv').config();
 
 const app = express();
 
 // Environment Configuration
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const MONGODB_URI = process.env.MONGODB_URI.replace('<db_password>', process.env.DB_PASSWORD);
 const BASE_URL = isDevelopment ? 'http://localhost:3000' : `https://${process.env.VERCEL_URL}`;
 
 console.log(`Running in ${isDevelopment ? 'development' : 'production'} mode`);
 
-// MongoDB Connection
-mongoose.connect(MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+// Initialize database connection
+db.connect()
+    .then(() => {
+        console.log(`Database initialized: ${db.useMongoDB ? 'MongoDB' : 'Local JSON'}`);
+    })
+    .catch(err => {
+        console.error('Database initialization error:', err);
+        process.exit(1);
+    });
 
 // Middleware
 app.use(cors({
@@ -50,15 +53,8 @@ app.get('/dashboard', (req, res) => {
 // API Endpoints
 app.get('/api/messages', async (req, res) => {
     try {
-        const messages = await Message.find()
-            .sort({ timestamp: -1 })
-            .lean(); // Convert to plain JavaScript objects
-        res.json({ 
-            messages: messages.map(msg => ({
-                ...msg,
-                id: msg._id // Map MongoDB _id to id for frontend compatibility
-            }))
-        });
+        const messages = await db.getAllMessages();
+        res.json({ messages });
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ error: 'Error fetching messages', messages: [] });
@@ -68,14 +64,12 @@ app.get('/api/messages', async (req, res) => {
 app.post('/api/messages', async (req, res) => {
     try {
         const { recipient, message } = req.body;
-        const newMessage = new Message({
+        const newMessage = await db.createMessage({
             recipient: recipient.toLowerCase(),
             recipientName: recipient,
             message,
-            timestamp: new Date(),
             isPublic: true
         });
-        await newMessage.save();
         res.json(newMessage);
     } catch (error) {
         res.status(500).json({ error: 'Error saving message' });
@@ -84,7 +78,7 @@ app.post('/api/messages', async (req, res) => {
 
 app.delete('/api/messages/:id', async (req, res) => {
     try {
-        await Message.findByIdAndDelete(req.params.id);
+        await db.deleteMessage(req.params.id);
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting message' });
@@ -94,7 +88,7 @@ app.delete('/api/messages/:id', async (req, res) => {
 app.delete('/api/messages', async (req, res) => {
     try {
         const { ids } = req.body;
-        await Message.deleteMany({ _id: { $in: ids } });
+        await db.deleteMessages(ids);
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting messages' });
@@ -111,7 +105,7 @@ app.get('/api/system-info', (req, res) => {
     try {
         const systemInfo = {
             lastUpdate: new Date().toISOString(),
-            dbStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+            dbStatus: db.isConnected() ? 'connected' : 'disconnected',
             serverLoad: {
                 value: Math.floor(Math.random() * 30), // Simulated load 0-30%
                 color: 'green'

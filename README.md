@@ -27,7 +27,19 @@ cd simple-menfess-web
 npm install
 ```
 
-2. Create .env file
+2. Database Configuration
+```env
+# Use MongoDB (true/false)
+USE_MONGODB=false     # true for MongoDB, false for local JSON
+
+# If using MongoDB:
+MONGODB_URI=your_mongodb_uri
+DB_PASSWORD=your_db_password
+
+# Local JSON will be stored in data/database.json if USE_MONGODB=false
+```
+
+3. Create .env file
 ```env
 PORT=3000
 NODE_ENV=development
@@ -37,7 +49,7 @@ ADMIN_PASSWORD=your_admin_password
 SITE_NAME=SendMenfess
 ```
 
-3. Start the server
+4. Start the server
 ```bash
 npm start
 ```
