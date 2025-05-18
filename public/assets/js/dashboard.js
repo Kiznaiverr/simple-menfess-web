@@ -331,4 +331,21 @@ document.addEventListener('DOMContentLoaded', () => {
             welcomeModal.classList.add('hidden');
         }, 300);
     });
+
+    // Mobile panel toggle with text change
+    const toggleBtn = document.querySelector('.toggle-quick-actions');
+    const toggleIcon = toggleBtn.querySelector('i');
+    
+    toggleBtn?.addEventListener('click', () => {
+        const isActive = quickActionsPanel.classList.toggle('active');
+        toggleIcon.className = isActive ? 'fas fa-times' : 'fas fa-bars';
+    });
+
+    // Close panel when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!quickActionsPanel.contains(e.target) && !toggleBtn.contains(e.target)) {
+            quickActionsPanel.classList.remove('active');
+            toggleIcon.className = 'fas fa-bars';
+        }
+    });
 });
