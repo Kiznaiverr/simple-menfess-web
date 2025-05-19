@@ -4,10 +4,7 @@ const cors = require('cors');
 const db = require('./services/db.service');
 const os = require('os');
 const osUtils = require('os-utils');
-const mongoose = require('mongoose'); // Added mongoose for MongoDB stats
-const Stats = require('./models/Stats');
-const { v4: uuidv4 } = require('uuid');
-const useragent = require('express-useragent');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
@@ -34,7 +31,6 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
-app.use(useragent.express());
 
 // Add maintenance middleware - place this before other routes
 app.use((req, res, next) => {
@@ -43,44 +39,6 @@ app.use((req, res, next) => {
         return res.sendFile(path.join(__dirname, 'views/errors/maintenance.html'));
     }
     next();
-});
-
-// Add visitor tracking middleware
-app.use(async (req, res, next) => {
-    try {
-        if (req.path.startsWith('/assets/')) {
-            return next();
-        }
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        let stats = await Stats.findOne({ 
-            date: {
-                $gte: today,
-                $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000)
-            }
-        });
-
-        if (!stats) {
-            stats = new Stats({ date: today });
-        }
-
-        const visitorId = req.cookies.visitorId || uuidv4();
-        const userAgent = req.useragent.source;
-
-        res.cookie('visitorId', visitorId, { 
-            maxAge: 365 * 24 * 60 * 60 * 1000,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production'
-        });
-
-        await stats.addVisitor(visitorId, userAgent);
-        next();
-    } catch (error) {
-        console.error('Error tracking visitors:', error);
-        next();
-    }
 });
 
 // API error handling middleware
@@ -178,16 +136,13 @@ app.delete('/api/messages', async (req, res) => {
 app.post('/api/verify-admin', (req, res) => {
     try {
         const { password } = req.body;
-        // Use constant-time comparison
         const isValid = require('crypto').timingSafeEqual(
             Buffer.from(password || ''),
             Buffer.from(process.env.ADMIN_PASSWORD)
         );
         
-        // Generic response
         res.json({ valid: isValid });
     } catch {
-        // Generic error response
         res.status(401).json({ valid: false });
     }
 });
@@ -203,7 +158,6 @@ function getCPUUsage() {
 
     const percentage = 100 * (end.user + end.system) / (diff * 1000);
     
-    // Reset measurements
     startTime = now;
     startUsage = process.cpuUsage();
     
@@ -259,17 +213,6 @@ app.get('/api/system-info', async (req, res) => {
                 maxSize: `${MONGODB_FREE_TIER_LIMIT} MB`,
                 usagePercent: ((dataSize / maxSize) * 100).toFixed(1)
             }
-        };
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const stats = await Stats.findOne({ date: { $gte: today } });
-        
-        systemInfo.stats = {
-            pageViews: stats?.pageViews || 0,
-            uniqueVisitors: stats?.uniqueVisitors?.length || 0,
-            todayVisitors: stats?.dailyVisitors?.length || 0,
-            popularPages: stats?.popularPages || []
         };
 
         res.json(systemInfo);
