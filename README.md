@@ -18,6 +18,9 @@
 - 🔐 **Admin Panel** - Secure message management dashboard
 - ⚡ **Session Management** - Auto logout after 5 minutes inactivity
 - 📊 **Storage Monitor** - MongoDB Free Tier storage monitoring
+- 🛑 **Maintenance Mode** - Redirect all users to maintenance page except admin
+- 🛡️ **Error Popup** - User-friendly error popups for DB/network issues
+- 📄 **Legal Pages** - Privacy Policy & Terms of Service included
 
 ## 🚀 Quick Start
 
@@ -50,7 +53,7 @@ Visit `http://your-web.com` 🎉
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Icons**: Font Awesome 6
-- **Deployment**: Vercel
+- **Deployment**: Vercel (with `vercel.json`)
 
 ## 📂 Project Structure
 ```
@@ -64,7 +67,10 @@ sendmenfess/
 │       └── js/
 │           ├── main.js
 │           ├── explore.js
-│           └── dashboard.js
+│           ├── dashboard.js
+│           ├── db-error-popup.js
+│           ├── error-popup.js
+│           └── login.js
 ├── views/
 │   ├── index.html
 │   ├── explore.html
@@ -73,19 +79,30 @@ sendmenfess/
 │   │   └── dashboard.html
 │   └── errors/
 │       ├── 404.html
-│       └── offline.html
+│       ├── offline.html
+│       └── maintenance.html
+│   └── legal/
+│       ├── privacy.html
+│       └── terms.html
 ├── models/
 │   └── Message.js
+├── services/
+│   └── db.service.js
+├── utils/
+├── data/
+│   └── database.json
 ├── server.js
 ├── .env
-└── package.json
+├── package.json
+├── vercel.json
+└── README.md
 ```
 
 ## 🔧 System Features
 
 ### Maintenance Mode
 Enable maintenance mode by setting `MAINTENANCE_MODE=true` in .env:
-- Redirects all routes to maintenance page
+- Redirects all routes to maintenance page (`maintenance.html`)
 - Keeps static assets accessible
 - Allows admin access
 - Useful for system updates
@@ -94,7 +111,7 @@ Enable maintenance mode by setting `MAINTENANCE_MODE=true` in .env:
 The system includes smart error handling:
 
 - **Database Connection:**
-  - Shows popup for temporary issues
+  - Shows popup for temporary issues (see `db-error-popup.js`)
   - Auto-retry connection
   - User-friendly error messages
 
@@ -118,6 +135,10 @@ The system includes smart error handling:
 - Manual data management tools
 - Real-time storage stats
 
+### Legal Pages
+- Privacy Policy (`privacy.html`)
+- Terms of Service (`terms.html`)
+
 ## 🛡️ Environment Variables
 
 | Variable | Description | Default | Required |
@@ -139,6 +160,7 @@ The system includes smart error handling:
 - Real-time message updates
 - Search & filter messages
 - Mobile-friendly interface
+- Legal & privacy compliance
 
 ### For Admins
 - Secure admin dashboard
@@ -146,6 +168,7 @@ The system includes smart error handling:
 - Bulk message actions
 - System status monitoring
 - Auto session management
+- Maintenance mode control
 
 ## 📱 Mobile Support
 
@@ -158,7 +181,7 @@ The app is fully responsive and tested on:
 ## 🚀 Deployment
 
 Ready to deploy on:
-- Vercel
+- Vercel (recommended, with `vercel.json`)
 - Heroku
 - Railway
 - Any Node.js hosting
