@@ -101,10 +101,19 @@
                     <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                                    <i class="fas fa-inbox text-indigo-500 mr-2"></i>
-                                    Message Management
-                                </h2>
+                                <div class="flex space-x-4">
+                                    <button data-tab="all" 
+                                        class="tab-button active px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center space-x-2">
+                                        <i class="fas fa-inbox"></i>
+                                        <span>All Messages</span>
+                                    </button>
+                                    <button data-tab="reported"
+                                        class="tab-button px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center space-x-2">
+                                        <i class="fas fa-flag text-red-500"></i>
+                                        <span>Reported</span>
+                                        <span id="reported-count" class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-xs">0</span>
+                                    </button>
+                                </div>
                                 <div class="flex gap-4">
                                     <button id="delete-selected" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 hidden flex items-center space-x-2">
                                         <i class="fas fa-trash-alt"></i>
@@ -113,22 +122,44 @@
                                 </div>
                             </div>
                             
-                            <div class="messages-table">
-                                <div class="overflow-x-auto">
+                            <!-- Message Tables -->
+                            <div id="all-messages" class="tab-content">
+                                <!-- Existing messages table -->
+                                <div class="messages-table">
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full divide-y divide-gray-200">
+                                            <thead class="bg-gray-50">
+                                                <tr>
+                                                    <th class="px-6 py-3 text-left">
+                                                        <input type="checkbox" id="select-all" class="rounded">
+                                                    </th>
+                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">To</th>
+                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
+                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="messages-table" class="bg-white divide-y divide-gray-200">
+                                                <!-- Messages will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="reported-messages" class="tab-content hidden">
+                                <div class="messages-table">
                                     <table class="min-w-full divide-y divide-gray-200">
                                         <thead class="bg-gray-50">
                                             <tr>
-                                                <th class="px-6 py-3 text-left">
-                                                    <input type="checkbox" id="select-all" class="rounded">
-                                                </th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">To</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Report Reason</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="messages-table" class="bg-white divide-y divide-gray-200">
-                                            <!-- Messages will be loaded here -->
+                                        <tbody id="reported-messages-table" class="bg-white divide-y divide-gray-200">
+                                            <!-- Reported messages will be loaded here -->
                                         </tbody>
                                     </table>
                                 </div>

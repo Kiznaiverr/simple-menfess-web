@@ -79,9 +79,113 @@ function displayMessages(messages) {
                 </div>
                 <p class="text-gray-600 mt-3">${msg.message}</p>
             </div>
+            <div class="px-6 py-3 bg-gray-50 flex justify-end items-center relative">
+                <button onclick="showReportModal('${msg._id}')" 
+                    class="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1 absolute inset-y-0 right-0 px-6 z-10">
+                    <i class="fas fa-flag"></i>
+                    Report
+                </button>
+            </div>
         `;
         container.appendChild(card);
     });
+}
+
+function showReportModal(id) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 transform transition-all scale-100 opacity-100">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-flag text-red-500 mr-2"></i>
+                    Report Message
+                </h3>
+                <button onclick="closeReportModal(this)" class="text-gray-400 hover:text-gray-500 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="submitReport(event, '${id}')" class="space-y-4" id="report-form">
+                <div>
+                    <textarea id="report-reason" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                        placeholder="Please describe why you're reporting this message..." 
+                        rows="4"
+                        required></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" 
+                        onclick="closeReportModal(this)" 
+                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                        <i class="fas fa-flag mr-2"></i>
+                        Submit Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Focus textarea and handle Enter key
+    const textarea = modal.querySelector('#report-reason');
+    setTimeout(() => textarea.focus(), 100);
+
+    // Handle Ctrl+Enter submit
+    textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.ctrlKey) {
+            e.preventDefault();
+            modal.querySelector('form').dispatchEvent(new Event('submit'));
+        }
+    });
+}
+
+function closeReportModal(element) {
+    const modal = element.closest('.fixed');
+    modal.classList.add('opacity-0', 'scale-95');
+    setTimeout(() => modal.remove(), 200);
+}
+
+async function submitReport(event, id) {
+    event.preventDefault();
+    const reason = document.getElementById('report-reason').value;
+    if (!reason) return;
+    
+    try {
+        const response = await fetch(`/api/messages/${id}/report`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reason })
+        });
+
+        if (response.ok) {
+            // Show success notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg z-50';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <p>Message reported successfully</p>
+                </div>
+            `;
+            document.body.appendChild(notification);
+
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('opacity-0');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+
+            // Close modal
+            closeReportModal(document.getElementById('report-reason'));
+        }
+    } catch (error) {
+        console.error('Error reporting message:', error);
+    }
 }
 
 // Event Listeners

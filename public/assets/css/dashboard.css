@@ -1,20 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f3f4f6;
-    min-height: 100vh;
-    margin: 0;
+/* CSS untuk tombol report */
+.report-btn {
+    position: relative;
+    z-index: 1000;
 }
 
-#dashboard-section {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+/* Pastikan container memiliki z-index yang cukup tinggi */
+.report-container {
+    z-index: 999;
+    overflow: visible;
 }
 
-.dashboard-header {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+/* Tambahkan styling lainnya jika diperlukan */
+.report-btn:hover {
+    cursor: pointer;
+    background-color: #ff4444;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 

@@ -50,6 +50,23 @@ class DatabaseService {
         return await Message.deleteMany({ _id: { $in: messageIds } });
     }
 
+    async reportMessage(messageId, reason) {
+        return await Message.findByIdAndUpdate(messageId, {
+            $push: { reports: { reason } },
+            isReported: true
+        }, { new: true });
+    }
+
+    async getReportedMessages() {
+        return await Message.find({ isReported: true }).sort({ timestamp: -1 }).lean();
+    }
+
+    async dismissReport(messageId) {
+        return await Message.findByIdAndUpdate(messageId, {
+            isReported: false
+        }, { new: true });
+    }
+
     isConnected() {
         return this._isConnected && mongoose.connection.readyState === 1;
     }

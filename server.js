@@ -114,10 +114,17 @@ app.post('/api/messages', async (req, res) => {
     }
 });
 
+// Update the delete endpoint to also reload reported messages
 app.delete('/api/messages/:id', async (req, res) => {
     try {
         await db.deleteMessage(req.params.id);
-        res.json({ success: true });
+        const messages = await db.getAllMessages(); // Get updated messages
+        const reportedMessages = await db.getReportedMessages(); // Get updated reported messages
+        res.json({ 
+            success: true,
+            messages,
+            reportedMessages 
+        });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting message' });
     }
@@ -225,6 +232,35 @@ app.get('/api/system-info', async (req, res) => {
 // Serve offline page
 app.get('/offline', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/errors/offline.html'));
+});
+
+// API Endpoints - Reported Messages
+app.post('/api/messages/:id/report', async (req, res) => {
+    try {
+        const { reason } = req.body;
+        const reportedMessage = await db.reportMessage(req.params.id, reason);
+        res.json(reportedMessage);
+    } catch (error) {
+        res.status(500).json({ error: 'Error reporting message' });
+    }
+});
+
+app.get('/api/messages/reported', async (req, res) => {
+    try {
+        const messages = await db.getReportedMessages();
+        res.json({ messages });
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching reported messages' });
+    }
+});
+
+app.post('/api/messages/:id/dismiss-report', async (req, res) => {
+    try {
+        const message = await db.dismissReport(req.params.id);
+        res.json(message);
+    } catch (error) {
+        res.status(500).json({ error: 'Error dismissing report' });
+    }
 });
 
 // 404 handler - must be last route

@@ -70,6 +70,7 @@ async function loadMessages() {
         messages = data.messages;
         displayMessages();
         updateStats();
+        updateReportedCount();
     } catch (error) {
         console.error('Error loading messages:', error);
     }
@@ -136,7 +137,8 @@ async function performDelete() {
         });
 
         if (response.ok) {
-            await loadMessages(); // Reload messages after delete
+            // Reload both regular and reported messages
+            await Promise.all([loadMessages(), loadReportedMessages()]);
         }
     } catch (error) {
         console.error('Error deleting messages:', error);
@@ -274,6 +276,53 @@ document.addEventListener('click', (e) => {
     }
 });
 
+async function loadReportedMessages() {
+    try {
+        const response = await fetch('/api/messages/reported');
+        const data = await response.json();
+        displayReportedMessages(data.messages);
+    } catch (error) {
+        console.error('Error loading reported messages:', error);
+    }
+}
+
+function displayReportedMessages(messages) {
+    const container = document.getElementById('reported-messages-table');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    messages.forEach(msg => {
+        const date = new Date(msg.timestamp);
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+            <td class="px-6 py-4 text-sm text-gray-900">${msg.recipientName}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">${msg.message}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">
+                ${msg.reports.map(r => r.reason).join(', ')}
+            </td>
+            <td class="px-6 py-4 text-sm space-x-2">
+                <button class="text-red-600 hover:text-red-900" onclick="showDeleteModal('${msg._id}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="text-green-600 hover:text-green-900" onclick="dismissReport('${msg._id}')">
+                    <i class="fas fa-check"></i> Keep
+                </button>
+            </td>
+        `;
+        
+        container.appendChild(tr);
+    });
+}
+
+// Update the reportMessage count
+function updateReportedCount() {
+    const reportedMessages = messages.filter(msg => msg.isReported);
+    const countElement = document.getElementById('reported-count');
+    countElement.textContent = reportedMessages.length;
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     // Check authentication first
@@ -334,4 +383,32 @@ document.addEventListener('DOMContentLoaded', () => {
             welcomeModal.classList.add('hidden');
         }, 300);
     });
+
+    // Add tab switching functionality
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.dataset.tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active', 'bg-gray-100');
+            });
+            button.classList.add('active', 'bg-gray-100');
+
+            // Show/hide content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`${tabName}-messages`).classList.remove('hidden');
+
+            // Load appropriate content
+            if (tabName === 'reported') {
+                loadReportedMessages();
+            } else {
+                loadMessages();
+            }
+        });
+    });
+
+    loadReportedMessages();
 });

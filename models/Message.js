@@ -11,6 +11,17 @@ const messageSchema = new mongoose.Schema({
     isPublic: {
         type: Boolean,
         default: true
+    },
+    reports: [{
+        reason: String,
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+    isReported: {
+        type: Boolean,
+        default: false
     }
 });
 
