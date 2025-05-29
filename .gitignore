@@ -49,3 +49,4 @@ public/data/messages.json
 .env
 data/database.json
 scripts/flood-test.js
+scripts/browser-flood.js
