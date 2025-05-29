@@ -123,27 +123,43 @@ const badwordsData = require('./data/badwords.json');
 
 // Add before API endpoints
 function containsBadwords(text) {
-    // Convert to lowercase and remove extra spaces
+    if (!text) return false;
+
+    // Normalize the text
     const normalized = text.toLowerCase()
-        .replace(/\s+/g, '') // Remove all spaces
-        .replace(/[^\w\s]/g, ''); // Remove special characters
+        // Convert numbers to letters
+        .replace(/0/g, 'o')
+        .replace(/1/g, 'i')
+        .replace(/3/g, 'e')
+        .replace(/4/g, 'a')
+        .replace(/5/g, 's')
+        .replace(/7/g, 't')
+        .replace(/8/g, 'b')
+        // Remove duplicate characters
+        .replace(/(.)\1+/g, '$1')
+        // Remove special characters and spaces
+        .replace(/[^\w\s]/g, '')
+        .trim();
 
-    // Check exact matches first
-    const words = text.toLowerCase().split(/\s+/);
-    const exactMatch = words.find(word => 
-        badwordsData.badwords.includes(word) && 
-        !badwordsData.exceptions.includes(word)
-    );
+    // Split and check each word
+    const words = normalized.split(/\s+/);
     
-    if (exactMatch) return exactMatch;
+    // Check for exact matches or variations
+    for (const word of words) {
+        const foundBadWord = badwordsData.badwords.find(badword => {
+            const normalizedBadword = badword
+                .replace(/[^\w]/g, '')
+                .toLowerCase();
+            return word.includes(normalizedBadword) || 
+                   normalizedBadword.includes(word);
+        });
 
-    // Check for spaced/obfuscated bad words
-    return badwordsData.badwords.find(badword => {
-        // Remove spaces and special chars from bad word too
-        const normalizedBadword = badword.replace(/\s+/g, '');
-        return normalized.includes(normalizedBadword) && 
-               !badwordsData.exceptions.includes(badword);
-    }) || false;
+        if (foundBadWord && !badwordsData.exceptions.includes(word)) {
+            return text.match(new RegExp(foundBadWord, 'i'))[0]; // Return original form
+        }
+    }
+
+    return false;
 }
 
 // Add rate limit cleanup every hour
@@ -374,6 +390,80 @@ app.use((err, req, res, next) => {
     res.status(500).json({
         error: isDevelopment ? err.message : 'Internal Server Error'
     });
+});
+
+// Add input validation middleware
+const validateInput = (req, res, next) => {
+    const { recipient, message } = req.body;
+    
+    // Check for script tags or suspicious patterns
+    const suspicious = /<[^>]*script|javascript:|data:|vbscript:|file:|about:|blob:/i;
+    
+    if (suspicious.test(recipient) || suspicious.test(message)) {
+        return res.status(400).json({
+            error: 'Invalid input detected'
+        });
+    }
+    
+    // Limit input length
+    if (message && message.length > 500) {
+        return res.status(400).json({
+            error: 'Message too long (max 500 characters)'
+        });
+    }
+    
+    if (recipient && recipient.length > 50) {
+        return res.status(400).json({
+            error: 'Recipient name too long (max 50 characters)'
+        });
+    }
+    
+    next();
+};
+
+// Apply validation to message endpoints
+app.post('/api/messages', validateInput, async (req, res) => {
+    try {
+        // Get client IP
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        
+        // Check rate limit
+        const rateLimitCheck = rateLimit.checkRateLimit(ip);
+        if (!rateLimitCheck.allowed) {
+            return res.status(429).json({ 
+                error: rateLimitCheck.error
+            });
+        }
+
+        const { recipient, message } = req.body;
+
+        // Check for badwords in message
+        const badWordInMessage = containsBadwords(message);
+        if (badWordInMessage) {
+            return res.status(400).json({ 
+                error: `Pesan mengandung kata tidak pantas "${badWordInMessage}"`
+            });
+        }
+
+        // Check for badwords in recipient name
+        const badWordInRecipient = containsBadwords(recipient);
+        if (badWordInRecipient) {
+            return res.status(400).json({
+                error: `Nama penerima mengandung kata tidak pantas "${badWordInRecipient}"`
+            });
+        }
+
+        const newMessage = await db.createMessage({
+            recipient: recipient.toLowerCase(),
+            recipientName: recipient,
+            message,
+            isPublic: true,
+            ip: ip // Optional: store IP for tracking
+        });
+        res.json(newMessage);
+    } catch (error) {
+        res.status(500).json({ error: 'Error saving message' });
+    }
 });
 
 // Server Startup

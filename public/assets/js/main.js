@@ -10,6 +10,16 @@ function updateLastRefresh() {
     }
 }
 
+// Escape HTML function
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 // Display messages function
 function displayMessages(messages) {
     const messagesContainer = document.getElementById('messages-container');
@@ -38,22 +48,31 @@ function displayMessages(messages) {
             hour12: false // Change to 24-hour format
         });
         
+        // Use textContent for safe insertion
+        const recipientSpan = document.createElement('span');
+        recipientSpan.textContent = msg.recipientName;
+        recipientSpan.className = 'inline-block px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800';
+        
+        const messageP = document.createElement('p');
+        messageP.textContent = msg.message;
+        messageP.className = 'text-gray-600 mt-3';
+
         messageCard.innerHTML = `
             <div class="p-6">
                 <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                            Untuk : ${msg.recipientName}
-                        </span>
-                    </div>
+                    <div id="recipient-container-${msg._id}"></div>
                     <span class="text-xs text-gray-500">${formattedDate}</span>
                 </div>
-                <p class="text-gray-600 mt-3">${msg.message}</p>
+                <div id="message-container-${msg._id}"></div>
             </div>
             <div class="px-6 py-3 bg-gray-50 flex justify-end items-center">
                 <span class="text-xs text-gray-400">Anonymous</span>
             </div>
         `;
+        
+        // Safely append content
+        messageCard.querySelector(`#recipient-container-${msg._id}`).appendChild(recipientSpan);
+        messageCard.querySelector(`#message-container-${msg._id}`).appendChild(messageP);
         
         messagesContainer.appendChild(messageCard);
     });
