@@ -99,19 +99,7 @@ async function loadMessages() {
     }
 }
 
-function showErrorPopup(message) {
-    const popup = document.createElement('div');
-    popup.className = 'fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg z-50';
-    popup.innerHTML = `
-        <div class="flex items-center">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <p>${message}</p>
-        </div>
-    `;
-    document.body.appendChild(popup);
-    setTimeout(() => popup.remove(), 5000);
-}
-
+// Update sendMessage function
 async function sendMessage(recipient, message) {
     try {
         const response = await fetch('/api/messages', {
@@ -122,13 +110,83 @@ async function sendMessage(recipient, message) {
             body: JSON.stringify({ recipient, message })
         });
 
-        if (!response.ok) throw new Error('Failed to send message');
-        await loadMessages(); // Reload messages after sending
+        const data = await response.json();
+
+        if (!response.ok) {
+            if (response.status === 400) {
+                showBadWordError(data.error || 'Invalid message content');
+                return false;
+            }
+            throw new Error('Failed to send message');
+        }
+
+        await loadMessages();
         return true;
     } catch (error) {
         console.error('Error sending message:', error);
+        showErrorPopup('Failed to send message. Please try again.');
         return false;
     }
+}
+
+// Add new function for bad word error popup
+function showBadWordError(message) {
+    const popup = document.createElement('div');
+    popup.className = 'fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg z-50 animate-fade-in';
+    popup.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+            </div>
+            <div class="flex-1">
+                <h4 class="font-semibold mb-1">Pesan Tidak Dapat Dikirim</h4>
+                <p class="text-sm">${message}</p>
+                <p class="text-xs text-red-600 mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Mohon gunakan bahasa yang sopan
+                </p>
+            </div>
+        </div>
+    `;
+    
+    // Add close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'absolute top-2 right-2 text-red-400 hover:text-red-600';
+    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+    closeBtn.onclick = () => popup.remove();
+    popup.appendChild(closeBtn);
+
+    document.body.appendChild(popup);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        popup.classList.add('opacity-0');
+        setTimeout(() => popup.remove(), 300);
+    }, 5000);
+}
+
+// Update showErrorPopup styling
+function showErrorPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg z-50 animate-fade-in max-w-md';
+    popup.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-xl text-red-500"></i>
+            </div>
+            <div class="flex-1">
+                <p class="font-medium text-red-700">${message}</p>
+                <p class="text-sm text-red-600 mt-1">Mohon gunakan bahasa yang sopan</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(popup);
+
+    // Add fade out animation
+    setTimeout(() => {
+        popup.classList.add('animate-fade-out');
+        setTimeout(() => popup.remove(), 500);
+    }, 5000);
 }
 
 // Offline detection
@@ -162,8 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (success) {
             messageForm.reset();
             confirmationModal.classList.remove('hidden');
-        } else {
-            alert('Failed to send message. Please try again.');
         }
     });
 
@@ -193,8 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (success) {
                 messageForm.reset();
                 confirmationModal.classList.remove('hidden');
-            } else {
-                alert('Failed to send message. Please try again.');
             }
         }
     });

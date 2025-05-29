@@ -102,9 +102,39 @@ app.get('/api/messages', async (req, res) => {
     }
 });
 
+const badwordsData = require('./data/badwords.json');
+
+// Add before API endpoints
+function containsBadwords(text) {
+    const words = text.toLowerCase().split(/\s+/);
+    const foundBadWord = words.find(word => 
+        badwordsData.badwords.includes(word) && 
+        !badwordsData.exceptions.includes(word)
+    );
+    return foundBadWord || false;
+}
+
+// Update POST /api/messages endpoint
 app.post('/api/messages', async (req, res) => {
     try {
         const { recipient, message } = req.body;
+
+        // Check for badwords in message
+        const badWordInMessage = containsBadwords(message);
+        if (badWordInMessage) {
+            return res.status(400).json({ 
+                error: `Pesan mengandung kata tidak pantas "${badWordInMessage}"`
+            });
+        }
+
+        // Check for badwords in recipient name
+        const badWordInRecipient = containsBadwords(recipient);
+        if (badWordInRecipient) {
+            return res.status(400).json({
+                error: `Nama penerima mengandung kata tidak pantas "${badWordInRecipient}"`
+            });
+        }
+
         const newMessage = await db.createMessage({
             recipient: recipient.toLowerCase(),
             recipientName: recipient,
