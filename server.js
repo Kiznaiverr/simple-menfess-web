@@ -134,28 +134,27 @@ function containsBadwords(text) {
         .replace(/4/g, 'a')
         .replace(/5/g, 's')
         .replace(/7/g, 't')
-        .replace(/8/g, 'b')
-        // Remove duplicate characters
-        .replace(/(.)\1+/g, '$1')
-        // Remove special characters and spaces
-        .replace(/[^\w\s]/g, '')
-        .trim();
+        .replace(/8/g, 'b');
 
-    // Split and check each word
-    const words = normalized.split(/\s+/);
+    // Split into words and clean each word
+    const words = normalized
+        .split(/\s+/)
+        .map(word => word.replace(/[^\w\s]/g, ''));
     
-    // Check for exact matches or variations
+    // Check each word against badwords list
     for (const word of words) {
         const foundBadWord = badwordsData.badwords.find(badword => {
+            // Clean badword the same way
             const normalizedBadword = badword
-                .replace(/[^\w]/g, '')
-                .toLowerCase();
-            return word.includes(normalizedBadword) || 
-                   normalizedBadword.includes(word);
+                .toLowerCase()
+                .replace(/[^\w\s]/g, '');
+            
+            // Only match if it's a whole word
+            return word === normalizedBadword;
         });
 
         if (foundBadWord && !badwordsData.exceptions.includes(word)) {
-            return text.match(new RegExp(foundBadWord, 'i'))[0]; // Return original form
+            return text.match(new RegExp(`\\b${foundBadWord}\\b`, 'i'))?.[0] || foundBadWord;
         }
     }
 
