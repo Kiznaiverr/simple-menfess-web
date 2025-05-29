@@ -1,3 +1,9 @@
+/* 
+ * Main Server Configuration File
+ * Sets up Express server, routes, middleware and API endpoints
+ */
+
+// Dependencies
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -14,9 +20,8 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const BASE_URL = isDevelopment ? 'http://localhost:3000' : `https://${process.env.VERCEL_URL}`;
 
 console.log(`Running in ${isDevelopment ? 'development' : 'production'} mode`);
-console.log(`Server running on ${BASE_URL}`);
 
-// Initialize database connection
+// Database Connection
 db.connect()
     .then(() => {
         console.log('✅ Database connected successfully');
@@ -25,16 +30,15 @@ db.connect()
         console.error('❌ Database connection error:', err);
     });
 
-// Middleware
+// Middleware Configuration
 app.use(cors({
     origin: '*', // Allow all origins in production
     credentials: true
 }));
 app.use(express.json());
 
-// Add maintenance middleware - place this before other routes
+// Maintenance mode middleware
 app.use((req, res, next) => {
-    // Only check maintenance mode, remove db connection check
     if (process.env.MAINTENANCE_MODE === 'true' && !req.path.includes('/assets/')) {
         return res.sendFile(path.join(__dirname, 'views/errors/maintenance.html'));
     }
@@ -45,7 +49,6 @@ app.use((req, res, next) => {
 app.use('/api/*', async (req, res, next) => {
     try {
         if (!db.isConnected()) {
-            // Try to reconnect
             await db.connect();
         }
         next();
@@ -58,7 +61,7 @@ app.use('/api/*', async (req, res, next) => {
     }
 });
 
-// Serve static files
+// Static File Serving
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use('/data', express.static(path.join(__dirname, 'public/data')));
 
@@ -79,7 +82,7 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/admin/dashboard.html'));
 });
 
-// Legal Routes
+// Legal pages
 app.get('/privacy', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/legal/privacy.html'));
 });
@@ -88,7 +91,7 @@ app.get('/terms', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/legal/terms.html'));
 });
 
-// API Endpoints
+// API Endpoints - Messages
 app.get('/api/messages', async (req, res) => {
     try {
         const messages = await db.getAllMessages();
@@ -114,12 +117,12 @@ app.post('/api/messages', async (req, res) => {
     }
 });
 
-// Update the delete endpoint to also reload reported messages
+// Delete single message and return updated lists
 app.delete('/api/messages/:id', async (req, res) => {
     try {
         await db.deleteMessage(req.params.id);
-        const messages = await db.getAllMessages(); // Get updated messages
-        const reportedMessages = await db.getReportedMessages(); // Get updated reported messages
+        const messages = await db.getAllMessages();
+        const reportedMessages = await db.getReportedMessages();
         res.json({ 
             success: true,
             messages,
@@ -130,6 +133,7 @@ app.delete('/api/messages/:id', async (req, res) => {
     }
 });
 
+// Bulk delete messages
 app.delete('/api/messages', async (req, res) => {
     try {
         const { ids } = req.body;
@@ -140,6 +144,7 @@ app.delete('/api/messages', async (req, res) => {
     }
 });
 
+// API Endpoints - Admin
 app.post('/api/verify-admin', (req, res) => {
     try {
         const { password } = req.body;
@@ -154,10 +159,15 @@ app.post('/api/verify-admin', (req, res) => {
     }
 });
 
-// Add CPU monitoring
+// System Monitoring
+// CPU usage tracking variables
 let startTime = Date.now();
 let startUsage = process.cpuUsage();
 
+/**
+ * Calculates current CPU usage percentage
+ * @returns {number} CPU usage percentage (0-100)
+ */
 function getCPUUsage() {
     const now = Date.now();
     const end = process.cpuUsage(startUsage);
@@ -173,6 +183,7 @@ function getCPUUsage() {
 
 const MONGODB_FREE_TIER_LIMIT = 512; // 512MB limit for free tier
 
+// System information endpoint
 app.get('/api/system-info', async (req, res) => {
     try {
         const cpuUsage = getCPUUsage();
@@ -182,7 +193,7 @@ app.get('/api/system-info', async (req, res) => {
         // Get MongoDB stats
         const dbStats = await mongoose.connection.db.stats();
         
-        // Convert bytes to appropriate units (KB, MB, GB)
+        // Helper function to format byte sizes
         function formatBytes(bytes) {
             if (bytes === 0) return '0 B';
             const k = 1024;
@@ -192,7 +203,7 @@ app.get('/api/system-info', async (req, res) => {
         }
 
         const dataSize = dbStats.dataSize + dbStats.indexSize;
-        const maxSize = MONGODB_FREE_TIER_LIMIT * 1024 * 1024; // Convert MB to bytes
+        const maxSize = MONGODB_FREE_TIER_LIMIT * 1024 * 1024; 
         
         const systemInfo = {
             lastUpdate: new Date().toISOString(),
@@ -229,7 +240,7 @@ app.get('/api/system-info', async (req, res) => {
     }
 });
 
-// Serve offline page
+// Offline Page
 app.get('/offline', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/errors/offline.html'));
 });
@@ -263,11 +274,12 @@ app.post('/api/messages/:id/dismiss-report', async (req, res) => {
     }
 });
 
-// 404 handler - must be last route
+// Error Page
 app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'views/errors/404.html'));
 });
 
+// Server Startup
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on ${BASE_URL}`);
