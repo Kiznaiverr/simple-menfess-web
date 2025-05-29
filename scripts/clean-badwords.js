@@ -1,3 +1,8 @@
+// run in the terminal with `node scripts/clean-badwords.js`
+// this will connect to the MongoDB database, check all messages for bad words, clean them if necessary, and delete any messages that contain bad words in either the recipient name or message content.
+
+
+
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 const mongoose = require('mongoose');
 const Message = require('../models/Message');

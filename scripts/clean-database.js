@@ -1,3 +1,7 @@
+// run in the terminal with `node scripts/clean-badwords.js`
+// this script will connect to the MongoDB database, clean messages by removing XSS vectors, and ensure reports are valid.
+
+
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') }); 
 const mongoose = require('mongoose');
