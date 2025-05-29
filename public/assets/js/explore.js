@@ -65,7 +65,7 @@ function displayMessages(messages) {
             <div class="p-6">
                 <div class="flex justify-between items-start mb-2">
                     <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                        To: ${msg.recipientName}
+                        Untuk : ${msg.recipientName}
                     </span>
                     <span class="text-xs text-gray-500">
                         ${date.toLocaleDateString('en-US', { 

@@ -20,11 +20,11 @@
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="/" class="px-4 py-2 rounded-lg hover:bg-white/10 transition flex items-center space-x-2">
                         <i class="fas fa-home"></i>
-                        <span>Home</span>
+                        <span>Beranda</span>
                     </a>
                     <a href="/explore" class="px-4 py-2 rounded-lg hover:bg-white/10 transition flex items-center space-x-2">
                         <i class="fas fa-compass"></i>
-                        <span>Explore</span>
+                        <span>Jelajahi</span>
                     </a>
                     <a href="/login" class="px-4 py-2 rounded-lg hover:bg-white/10 transition flex items-center space-x-2">
                         <i class="fas fa-lock"></i>
@@ -40,10 +40,10 @@
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-white/10 mt-2 rounded-lg">
                 <a href="/" class="block py-2 text-white hover:bg-white/10">
-                    <i class="fas fa-home mr-2"></i>Home
+                    <i class="fas fa-home mr-2"></i>Beranda
                 </a>
                 <a href="/explore" class="block py-2 text-white hover:bg-white/10">
-                    <i class="fas fa-compass mr-2"></i>Explore
+                    <i class="fas fa-compass mr-2"></i>Jelajahi
                 </a>
                 <a href="/login" class="block py-2 text-white hover:bg-white/10">
                     <i class="fas fa-lock mr-2"></i>Admin
@@ -110,19 +110,19 @@
                 <form id="message-form" class="p-6 space-y-6">
                     <div class="relative">
                         <label for="recipient" class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-user-circle text-indigo-500 mr-2"></i>To:
+                            <i class="fas fa-user-circle text-indigo-500 mr-2"></i>Untuk :
                         </label>
                         <input type="text" id="recipient" 
                             class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                            placeholder="Who's the lucky recipient?" required>
+                            placeholder="Siapa penerima beruntungnya?" required>
                     </div>
                     <div class="relative">
                         <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-heart text-indigo-500 mr-2"></i>Your Message:
+                            <i class="fas fa-heart text-indigo-500 mr-2"></i>Pesan Anda:
                         </label>
                         <textarea id="message" rows="4" 
                             class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none"
-                            placeholder="Express your feelings..." required></textarea>
+                            placeholder="Ekspresikan perasaan Anda..." required></textarea>
                         <div class="absolute bottom-3 right-3 text-gray-400 text-sm">
                             <i class="fas fa-lock mr-1"></i>Anonymous
                         </div>
@@ -131,12 +131,12 @@
                         <a href="/explore" 
                             class="group px-6 py-3 border-2 border-indigo-600 text-indigo-600 font-medium rounded-xl hover:bg-indigo-50 transition-all duration-200 flex items-center space-x-2">
                             <i class="fas fa-compass group-hover:rotate-45 transition-transform duration-300"></i>
-                            <span>Explore Messages</span>
+                            <span>Jelajahi Pesan</span>
                         </a>
                         <button type="submit" 
                             class="group px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:opacity-90 transition-all duration-200 flex items-center space-x-2 hover:shadow-lg">
                             <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform duration-300"></i>
-                            <span>Send Message</span>
+                            <span>Kirim Pesan</span>
                         </button>
                     </div>
                 </form>
@@ -151,12 +151,12 @@
                         <i class="fas fa-clock text-white text-xl"></i>
                     </span>
                     <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-                        Recent Messages
+                        Pesan Terbaru
                     </h3>
                 </div>
                 <span id="last-update" class="text-sm bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full">
                     <i class="fas fa-rotate mr-1"></i>
-                    <span>Updated just now</span>
+                    <span>Diperbarui baru saja</span>
                 </span>
             </div>
             
@@ -169,11 +169,11 @@
                     <div class="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-envelope-open text-3xl text-indigo-500"></i>
                     </div>
-                    <h4 class="text-xl font-bold text-gray-800 mb-2">No Messages Yet</h4>
-                    <p class="text-gray-500 mb-6">Be the first one to send a secret message!</p>
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Belum Ada Pesan</h4>
+                    <p class="text-gray-500 mb-6">Jadilah yang pertama mengirim pesan rahasia!</p>
                     <button onclick="document.getElementById('recipient').focus()" 
                             class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:opacity-90 transition-all duration-200">
-                        Send First Message
+                        Kirim Pesan Pertama
                     </button>
                 </div>
             </div>
@@ -181,7 +181,7 @@
             <div class="text-center mt-10">
                 <a href="/explore" 
                    class="inline-flex items-center space-x-2 px-8 py-3 bg-white border-2 border-indigo-600 text-indigo-600 font-medium rounded-xl hover:bg-indigo-50 transition-all duration-200 group">
-                    <span>View All Messages</span>
+                    <span>Lihat Semua Pesan</span>
                     <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"></i>
                 </a>
             </div>
@@ -197,8 +197,8 @@
                     <span class="text-gray-700 font-medium">SendMenfess</span>
                 </div>
                 <div class="flex items-center space-x-4 text-sm text-gray-500">
-                    <a href="/privacy" class="hover:text-indigo-600 transition">Privacy Policy</a>
-                    <a href="/terms" class="hover:text-indigo-600 transition">Terms of Service</a>
+                    <a href="/privacy" class="hover:text-indigo-600 transition">Kebijakan Privasi</a>
+                    <a href="/terms" class="hover:text-indigo-600 transition">Syarat Layanan</a>
                     <span>© <script>document.write(new Date().getFullYear())</script> SendMenfess</span>
                 </div>
             </div>
@@ -212,13 +212,13 @@
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
                     <i class="fas fa-check text-green-600 text-xl"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mt-3">Message Sent!</h3>
+                <h3 class="text-lg font-medium text-gray-900 mt-3">Pesan Terkirim!</h3>
                 <div class="mt-2">
-                    <p class="text-sm text-gray-500">Your anonymous message has been delivered.</p>
+                    <p class="text-sm text-gray-500">Pesan anonim Anda telah terkirim.</p>
                 </div>
                 <div class="mt-4">
                     <button id="modal-close" type="button" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Close
+                        Tutup
                     </button>
                 </div>
             </div>
