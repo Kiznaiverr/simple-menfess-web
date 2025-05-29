@@ -48,3 +48,4 @@ Thumbs.db
 public/data/messages.json
 .env
 data/database.json
+scripts/flood-test.js
