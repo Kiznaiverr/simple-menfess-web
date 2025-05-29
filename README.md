@@ -13,6 +13,9 @@
 - 🔒 **100% Anonymous** - No login required for sending messages
 - 🚀 **Real-time Updates** - Messages appear instantly
 - 🔍 **Smart Search** - Search by recipient or message content
+- 🚫 **Content Filtering** - Multi-language bad word detection & filtering
+- 🌐 **Language Support** - Filters words in ID, EN, TH, VN, PH
+- ⚠️ **Smart Alerts** - Shows detected inappropriate words
 - 📱 **Fully Responsive** - Works perfectly on all devices
 - 🎨 **Modern UI** - Clean and intuitive TailwindCSS interface
 - 🔐 **Admin Panel** - Secure message management dashboard
@@ -200,3 +203,43 @@ Project Link: [https://github.com/Kiznaiverr/simple-menfess-web](https://github.
 <div align="center">
   Made with ❤️ by <a href="https://github.com/Kiznaiverr">Kiznaiverr</a>
 </div>
+
+## 🛡️ Content Filtering
+
+The app includes comprehensive content moderation:
+
+### Bad Word Detection
+- Multi-language support (ID, EN, TH, VN, PH)
+- Smart word variation detection
+- Custom exception handling
+- Real-time validation
+- User-friendly error messages
+
+### Implementation
+```javascript
+{
+  "badwords": [
+    // Indonesian
+    "kata1", "kata2",
+    // English
+    "word1", "word2",
+    // Thai
+    "คำ1", "คำ2",
+    // Vietnamese
+    "từ1", "từ2",
+    // Filipino
+    "salita1", "salita2"
+  ],
+  "exceptions": [
+    "legitimate1",
+    "legitimate2"
+  ]
+}
+```
+
+### Features
+- Real-time message validation
+- Shows specific detected words
+- Custom error messages
+- Exception handling
+- Easy configuration
