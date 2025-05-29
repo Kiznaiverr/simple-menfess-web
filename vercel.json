@@ -20,10 +20,6 @@
       "dest": "/public/data/$1"
     },
     {
-      "src": "/favicon.ico",
-      "dest": "/public/assets/favicon.ico"
-    },
-    {
       "src": "/(.*)",
       "dest": "/server.js"
     }
