@@ -61,13 +61,24 @@ app.use('/api/*', async (req, res, next) => {
     }
 });
 
-// Static File Serving
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-app.use('/data', express.static(path.join(__dirname, 'public/data')));
+// Add after existing middleware and before routes
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
+    next();
+});
+
+// Update static file serving with absolute paths
+app.use('/assets', express.static(path.join(process.cwd(), 'public', 'assets')));
+app.use('/data', express.static(path.join(process.cwd(), 'public', 'data')));
 
 // View Routes
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/index.html'));
+    try {
+        res.sendFile(path.join(process.cwd(), 'views', 'index.html'));
+    } catch (error) {
+        console.error('Error serving index:', error);
+        res.status(500).send('Server Error');
+    }
 });
 
 app.get('/explore', (req, res) => {
@@ -79,7 +90,12 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/admin/dashboard.html'));
+    try {
+        res.sendFile(path.join(process.cwd(), 'views', 'admin', 'dashboard.html'));
+    } catch (error) {
+        console.error('Error serving dashboard:', error);
+        res.status(500).send('Server Error');
+    }
 });
 
 // Legal pages
@@ -307,6 +323,14 @@ app.post('/api/messages/:id/dismiss-report', async (req, res) => {
 // Error Page
 app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'views/errors/404.html'));
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Global error:', err);
+    res.status(500).json({
+        error: isDevelopment ? err.message : 'Internal Server Error'
+    });
 });
 
 // Server Startup

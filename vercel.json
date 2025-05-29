@@ -4,15 +4,32 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
+      "src": "/assets/(.*)",
+      "dest": "/public/assets/$1"
+    },
+    {
+      "src": "/data/(.*)",
+      "dest": "/public/data/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/public/assets/favicon.ico"
+    },
+    {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "/server.js"
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "MONGODB_URI": "@mongodb_uri"
   }
 }
