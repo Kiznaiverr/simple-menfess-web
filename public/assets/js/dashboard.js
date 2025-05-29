@@ -148,6 +148,21 @@ async function performDelete() {
     }
 }
 
+async function dismissReport(messageId) {
+    try {
+        const response = await fetch(`/api/messages/${messageId}/dismiss-report`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            await loadReportedMessages();
+        }
+    } catch (error) {
+        console.error('Error dismissing report:', error);
+    }
+}
+
 function updateStats() {
     const totalMessages = messages.length;
     const today = new Date().toDateString();
@@ -322,6 +337,9 @@ function updateReportedCount() {
     const countElement = document.getElementById('reported-count');
     countElement.textContent = reportedMessages.length;
 }
+
+// Set current year
+document.getElementById('current-year').textContent = new Date().getFullYear();
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
