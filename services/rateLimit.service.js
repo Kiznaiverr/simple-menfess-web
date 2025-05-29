@@ -3,8 +3,14 @@ class RateLimitService {
         this.requests = new Map();
         this.bannedIPs = new Map();
         this.WINDOW_SIZE_MS = 60 * 1000; // 1 minute
-        this.MAX_REQUESTS = 5; // 5 requests per minute
+        this.MAX_REQUESTS = 3; // Reduce to 3 requests per minute
         this.BAN_DURATION_MS = 60 * 60 * 1000; // 1 hour
+        this.SPAM_DETECTION = {
+            TIME_WINDOW: 5 * 60 * 1000, // 5 minutes
+            MAX_SIMILAR_MESSAGES: 3,     // Max similar messages
+            MIN_TIME_BETWEEN: 10 * 1000  // Min 10 seconds between messages
+        };
+        this.messageHistory = new Map(); // Track message content
     }
 
     isIPBanned(ip) {
@@ -45,32 +51,45 @@ class RateLimitService {
         const userRequests = this.requests.get(ip) || [];
         
         // Remove requests outside current window
-        const validRequests = userRequests.filter(time => time > now - this.WINDOW_SIZE_MS);
-        
-        // Check for spam pattern (rapid requests)
-        if (validRequests.length >= 3) {
-            const timeDiffs = [];
-            for (let i = 1; i < validRequests.length; i++) {
-                timeDiffs.push(validRequests[i] - validRequests[i-1]);
-            }
-            
-            // If average time between requests is less than 2 seconds
-            const avgTimeDiff = timeDiffs.reduce((a,b) => a + b, 0) / timeDiffs.length;
-            if (avgTimeDiff < 2000) {
+        const validRequests = userRequests.filter(time => 
+            time > now - this.WINDOW_SIZE_MS
+        );
+
+        // Check time between requests
+        if (validRequests.length > 0) {
+            const lastRequest = Math.max(...validRequests);
+            const timeSinceLastRequest = now - lastRequest;
+
+            if (timeSinceLastRequest < this.SPAM_DETECTION.MIN_TIME_BETWEEN) {
                 this.banIP(ip);
                 return {
                     allowed: false,
-                    error: 'Spam detected. You are banned for 1 hour.'
+                    error: 'Spam detected. You must wait at least 10 seconds between messages.',
+                    redirect: `/banned?until=${now + this.BAN_DURATION_MS}`
                 };
             }
         }
 
+        // Check request frequency
+        if (validRequests.length >= 3) {
+            const timeSpan = Math.max(...validRequests) - Math.min(...validRequests);
+            if (timeSpan < 30000) { // If 3 messages within 30 seconds
+                this.banIP(ip);
+                return {
+                    allowed: false,
+                    error: 'Spam behavior detected. You are banned for 1 hour.',
+                    redirect: `/banned?until=${now + this.BAN_DURATION_MS}`
+                };
+            }
+        }
+
+        // Enforce max requests per minute
         if (validRequests.length >= this.MAX_REQUESTS) {
             const oldestRequest = Math.min(...validRequests);
             const resetTime = Math.ceil((oldestRequest + this.WINDOW_SIZE_MS - now) / 1000);
             return {
                 allowed: false,
-                error: `Rate limit exceeded. Try again in ${resetTime} seconds.`
+                error: `Rate limit exceeded. Please wait ${resetTime} seconds.`
             };
         }
 
@@ -105,7 +124,9 @@ class RateLimitService {
         
         // Cleanup requests
         for (const [ip, requests] of this.requests) {
-            const validRequests = requests.filter(time => time > now - this.WINDOW_SIZE_MS);
+            const validRequests = requests.filter(time => 
+                time > now - this.WINDOW_SIZE_MS
+            );
             if (validRequests.length === 0) {
                 this.requests.delete(ip);
             } else {
@@ -117,6 +138,18 @@ class RateLimitService {
         for (const [ip, banInfo] of this.bannedIPs) {
             if (now >= banInfo.expiry) {
                 this.bannedIPs.delete(ip);
+            }
+        }
+
+        // Cleanup message history
+        for (const [ip, history] of this.messageHistory) {
+            const validHistory = history.filter(entry => 
+                entry.timestamp > now - this.SPAM_DETECTION.TIME_WINDOW
+            );
+            if (validHistory.length === 0) {
+                this.messageHistory.delete(ip);
+            } else {
+                this.messageHistory.set(ip, validHistory);
             }
         }
     }
