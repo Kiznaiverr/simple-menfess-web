@@ -118,6 +118,14 @@ async function sendMessage(recipient, message) {
                 showBadWordError(data.error || 'Invalid message content');
                 return false;
             }
+            if (response.status === 429) {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return false;
+                }
+                showRateLimitError(data.error);
+                return false;
+            }
             throw new Error('Failed to send message');
         }
 
@@ -128,6 +136,33 @@ async function sendMessage(recipient, message) {
         showErrorPopup('Failed to send message. Please try again.');
         return false;
     }
+}
+
+function showRateLimitError(message) {
+    const popup = document.createElement('div');
+    popup.className = 'fixed top-4 right-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow-lg z-50 animate-fade-in';
+    popup.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+                <i class="fas fa-clock text-2xl text-yellow-500"></i>
+            </div>
+            <div class="flex-1">
+                <h4 class="font-semibold mb-1">Batas Pengiriman Tercapai</h4>
+                <p class="text-sm">${message}</p>
+                <p class="text-xs text-yellow-600 mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Mohon tunggu beberapa saat
+                </p>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(popup);
+    
+    setTimeout(() => {
+        popup.classList.add('opacity-0');
+        setTimeout(() => popup.remove(), 300);
+    }, 5000);
 }
 
 // Add new function for bad word error popup

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporarily Banned - SendMenfess</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-red-500 to-pink-600 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/20">
+        <div class="text-center">
+            <div class="relative mx-auto w-24 h-24 mb-6">
+                <div class="absolute inset-0 bg-red-100 rounded-full animate-ping opacity-25"></div>
+                <div class="relative bg-red-100 rounded-full w-24 h-24 flex items-center justify-center">
+                    <i class="fas fa-ban text-4xl text-red-500"></i>
+                </div>
+            </div>
+            
+            <h1 class="text-2xl font-bold text-white mb-4">Akses Dibatasi</h1>
+            
+            <p class="text-white/80 mb-6">
+                Anda telah terdeteksi melakukan spam. Akses dibatasi untuk:
+            </p>
+            
+            <div class="bg-white/20 rounded-lg p-4 mb-6">
+                <div id="countdown" class="text-3xl font-mono text-white"></div>
+            </div>
+
+            <p class="text-sm text-white/70 mb-8">
+                Mohon gunakan layanan kami dengan bijak dan hindari spam.
+            </p>
+
+            <div class="space-y-4">
+                <a href="/" class="block w-full px-6 py-3 text-sm font-medium text-red-600 bg-white rounded-lg hover:bg-red-50 transition-colors">
+                    <i class="fas fa-home mr-2"></i> Kembali ke Beranda
+                </a>
+                <button onclick="checkBanStatus()" class="w-full px-6 py-3 text-sm font-medium text-white bg-white/20 rounded-lg hover:bg-white/30 transition-colors">
+                    <i class="fas fa-sync-alt mr-2"></i> Cek Status Ban
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCountdown(banEndTime) {
+            const now = new Date().getTime();
+            const distance = banEndTime - now;
+            
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdown').innerHTML = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (distance < 0) {
+                window.location.href = '/';
+            }
+        }
+
+        async function checkBanStatus() {
+            const response = await fetch('/api/check-ban');
+            const data = await response.json();
+            
+            if (!data.banned) {
+                window.location.href = '/';
+            }
+        }
+
+        // Get ban end time from URL params
+        const params = new URLSearchParams(window.location.search);
+        const banEndTime = parseInt(params.get('until'));
+        
+        // Update countdown every second
+        setInterval(() => updateCountdown(banEndTime), 1000);
+        updateCountdown(banEndTime); // Initial update
+    </script>
+</body>
+</html>

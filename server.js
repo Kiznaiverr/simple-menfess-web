@@ -11,6 +11,7 @@ const db = require('./services/db.service');
 const os = require('os');
 const osUtils = require('os-utils');
 const mongoose = require('mongoose');
+const rateLimit = require('./services/rateLimit.service');
 require('dotenv').config();
 
 const app = express();
@@ -122,17 +123,46 @@ const badwordsData = require('./data/badwords.json');
 
 // Add before API endpoints
 function containsBadwords(text) {
+    // Convert to lowercase and remove extra spaces
+    const normalized = text.toLowerCase()
+        .replace(/\s+/g, '') // Remove all spaces
+        .replace(/[^\w\s]/g, ''); // Remove special characters
+
+    // Check exact matches first
     const words = text.toLowerCase().split(/\s+/);
-    const foundBadWord = words.find(word => 
+    const exactMatch = words.find(word => 
         badwordsData.badwords.includes(word) && 
         !badwordsData.exceptions.includes(word)
     );
-    return foundBadWord || false;
+    
+    if (exactMatch) return exactMatch;
+
+    // Check for spaced/obfuscated bad words
+    return badwordsData.badwords.find(badword => {
+        // Remove spaces and special chars from bad word too
+        const normalizedBadword = badword.replace(/\s+/g, '');
+        return normalized.includes(normalizedBadword) && 
+               !badwordsData.exceptions.includes(badword);
+    }) || false;
 }
+
+// Add rate limit cleanup every hour
+setInterval(() => rateLimit.cleanup(), 60 * 60 * 1000);
 
 // Update POST /api/messages endpoint
 app.post('/api/messages', async (req, res) => {
     try {
+        // Get client IP
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        
+        // Check rate limit
+        const rateLimitCheck = rateLimit.checkRateLimit(ip);
+        if (!rateLimitCheck.allowed) {
+            return res.status(429).json({ 
+                error: rateLimitCheck.error
+            });
+        }
+
         const { recipient, message } = req.body;
 
         // Check for badwords in message
@@ -155,7 +185,8 @@ app.post('/api/messages', async (req, res) => {
             recipient: recipient.toLowerCase(),
             recipientName: recipient,
             message,
-            isPublic: true
+            isPublic: true,
+            ip: ip // Optional: store IP for tracking
         });
         res.json(newMessage);
     } catch (error) {
@@ -318,6 +349,18 @@ app.post('/api/messages/:id/dismiss-report', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error dismissing report' });
     }
+});
+
+// Add banned page route
+app.get('/banned', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views/errors/banned.html'));
+});
+
+// Add check-ban endpoint
+app.get('/api/check-ban', (req, res) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const banInfo = rateLimit.getBanInfo(ip);
+    res.json(banInfo);
 });
 
 // Error Page
