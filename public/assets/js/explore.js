@@ -72,8 +72,9 @@ function displayMessages(messages) {
                             year: 'numeric', 
                             month: 'short', 
                             day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: false // Change to 24-hour format
                         })}
                     </span>
                 </div>
