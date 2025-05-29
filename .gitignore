@@ -17,7 +17,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Runtime data
-data/*.json
 !data/messages.example.json
 
 # Editor directories
@@ -48,3 +47,4 @@ Thumbs.db
 # Database
 public/data/messages.json
 .env
+data/database.json
