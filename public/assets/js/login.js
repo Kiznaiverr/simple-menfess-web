@@ -6,9 +6,13 @@ async function verifyPassword(password) {
             body: JSON.stringify({ password })
         });
         const data = await response.json();
-        return data.valid;
+        if (data.valid && data.token) {
+            localStorage.setItem('adminToken', data.token);
+            return true;
+        }
+        return false;
     } catch {
-        return false; 
+        return false;
     }
 }
 
@@ -18,7 +22,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const errorMsg = document.getElementById('error-message');
     
     if (await verifyPassword(password)) {
-        sessionStorage.setItem('isLoggedIn', 'true');
         window.location.href = '/dashboard';
     } else {
         errorMsg.classList.add('visible');

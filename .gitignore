@@ -51,3 +51,4 @@ data/database.json
 scripts/flood-test.js
 scripts/browser-flood.js
 scripts/apikey-test.js
+scripts/delete-test.js

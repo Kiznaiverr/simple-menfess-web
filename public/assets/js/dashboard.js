@@ -198,10 +198,16 @@ async function performDelete() {
         const response = await fetch('/api/messages', {
             method: 'DELETE',
             headers: { 
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
             },
             body: JSON.stringify({ ids: deleteIds })
         });
+
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = '/login';
+            return;
+        }
 
         if (response.ok) {
             await Promise.all([loadMessages(), loadReportedMessages()]);
@@ -377,10 +383,12 @@ function updateReportedCount() {
 document.getElementById('current-year').textContent = new Date().getFullYear();
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (!sessionStorage.getItem('isLoggedIn')) {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
         window.location.href = '/login';
         return;
     }
+
     resetSessionTimer();
     trackActivity();
     loadMessages().then(() => {
@@ -389,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     setupSearch();
     document.getElementById('logout-btn').addEventListener('click', () => {
-        sessionStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('adminToken');
         window.location.href = '/login';
     });
     document.getElementById('select-all')?.addEventListener('change', (e) => {

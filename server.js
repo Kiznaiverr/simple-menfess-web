@@ -7,6 +7,7 @@ const db = require('./services/db.service');
 const os = require('os');
 const mongoose = require('mongoose');
 const rateLimit = require('./services/rateLimit.service');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
@@ -51,6 +52,24 @@ app.use((req, res, next) => {
 
 app.use('/assets', express.static(path.join(process.cwd(), 'public', 'assets')));
 app.use('/data', express.static(path.join(process.cwd(), 'public', 'data')));
+
+// JWT Authentication Middleware
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid token' });
+        }
+        req.user = user;
+        next();
+    });
+};
 
 // View Routes
 app.get('/', (req, res) => {
@@ -151,7 +170,7 @@ app.post('/api/messages', async (req, res) => {
     }
 });
 
-app.delete('/api/messages/:id', async (req, res) => {
+app.delete('/api/messages/:id', authenticateToken, async (req, res) => {
     try {
         await db.deleteMessage(req.params.id);
         const messages = await db.getAllMessages();
@@ -162,7 +181,7 @@ app.delete('/api/messages/:id', async (req, res) => {
     }
 });
 
-app.delete('/api/messages', async (req, res) => {
+app.delete('/api/messages', authenticateToken, async (req, res) => {
     try {
         const { ids } = req.body;
         await db.deleteMessages(ids);
@@ -180,7 +199,13 @@ app.post('/api/verify-admin', (req, res) => {
             Buffer.from(password || ''),
             Buffer.from(process.env.ADMIN_PASSWORD)
         );
-        res.json({ valid: isValid });
+        
+        if (isValid) {
+            const token = jwt.sign({ role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.json({ valid: true, token });
+        } else {
+            res.json({ valid: false });
+        }
     } catch {
         res.status(401).json({ valid: false });
     }
