@@ -70,21 +70,10 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/admin/login.html'));
 });
 
-// Dashboard with API key injection
+// Dashboard
 app.get('/dashboard', (req, res) => {
-    const fs = require('fs');
     const dashboardPath = path.join(process.cwd(), 'views', 'admin', 'dashboard.html');
-    fs.readFile(dashboardPath, 'utf8', (err, html) => {
-        if (err) {
-            console.error('Error serving dashboard:', err);
-            return res.status(500).send('Server Error');
-        }
-        const injectedHtml = html.replace(
-            /window\.API_KEY\s*=\s*['"].*?['"];/,
-            `window.API_KEY = '${process.env.API_KEY}';`
-        );
-        res.send(injectedHtml);
-    });
+    res.sendFile(dashboardPath);
 });
 
 app.get('/privacy', (req, res) => {
@@ -132,17 +121,8 @@ function containsBadwords(text) {
 
 setInterval(() => rateLimit.cleanup(), 60 * 60 * 1000);
 
-// API Key Middleware
-function requireApiKey(req, res, next) {
-    const apiKey = req.headers['x-api-key'];
-    if (!apiKey || apiKey !== process.env.API_KEY) {
-        return res.status(401).json({ error: 'Unauthorized: Invalid API key' });
-    }
-    next();
-}
-
 // POST/DELETE with API key
-app.post('/api/messages', requireApiKey, async (req, res) => {
+app.post('/api/messages', async (req, res) => {
     try {
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         const rateLimitCheck = rateLimit.checkRateLimit(ip);
@@ -171,7 +151,7 @@ app.post('/api/messages', requireApiKey, async (req, res) => {
     }
 });
 
-app.delete('/api/messages/:id', requireApiKey, async (req, res) => {
+app.delete('/api/messages/:id', async (req, res) => {
     try {
         await db.deleteMessage(req.params.id);
         const messages = await db.getAllMessages();
@@ -182,7 +162,7 @@ app.delete('/api/messages/:id', requireApiKey, async (req, res) => {
     }
 });
 
-app.delete('/api/messages', requireApiKey, async (req, res) => {
+app.delete('/api/messages', async (req, res) => {
     try {
         const { ids } = req.body;
         await db.deleteMessages(ids);

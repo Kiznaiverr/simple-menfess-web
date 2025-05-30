@@ -195,20 +195,16 @@ function showDeleteModal(ids, isMultiple = false) {
 
 async function performDelete() {
     try {
-        const apiKey = window.API_KEY;
         const response = await fetch('/api/messages', {
             method: 'DELETE',
             headers: { 
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ ids: deleteIds })
         });
 
         if (response.ok) {
             await Promise.all([loadMessages(), loadReportedMessages()]);
-        } else if (response.status === 401) {
-            alert('Unauthorized: Invalid API key.');
         }
     } catch (error) {
         console.error('Error deleting messages:', error);
