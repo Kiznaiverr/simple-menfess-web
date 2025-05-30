@@ -2,15 +2,15 @@ class RateLimitService {
     constructor() {
         this.requests = new Map();
         this.bannedIPs = new Map();
-        this.WINDOW_SIZE_MS = 60 * 1000; // 1 minute
-        this.MAX_REQUESTS = 3; // Reduce to 3 requests per minute
-        this.BAN_DURATION_MS = 60 * 60 * 1000; // 1 hour
+        this.WINDOW_SIZE_MS = 60 * 1000; 
+        this.MAX_REQUESTS = 3; 
+        this.BAN_DURATION_MS = 60 * 60 * 1000; 
         this.SPAM_DETECTION = {
-            TIME_WINDOW: 5 * 60 * 1000, // 5 minutes
-            MAX_SIMILAR_MESSAGES: 3,     // Max similar messages
-            MIN_TIME_BETWEEN: 10 * 1000  // Min 10 seconds between messages
+            TIME_WINDOW: 5 * 60 * 1000, 
+            MAX_SIMILAR_MESSAGES: 3,     
+            MIN_TIME_BETWEEN: 10 * 1000  
         };
-        this.messageHistory = new Map(); // Track message content
+        this.messageHistory = new Map(); 
     }
 
     isIPBanned(ip) {
@@ -50,12 +50,10 @@ class RateLimitService {
         const now = Date.now();
         const userRequests = this.requests.get(ip) || [];
         
-        // Remove requests outside current window
         const validRequests = userRequests.filter(time => 
             time > now - this.WINDOW_SIZE_MS
         );
 
-        // Check time between requests
         if (validRequests.length > 0) {
             const lastRequest = Math.max(...validRequests);
             const timeSinceLastRequest = now - lastRequest;
@@ -70,10 +68,9 @@ class RateLimitService {
             }
         }
 
-        // Check request frequency
         if (validRequests.length >= 3) {
             const timeSpan = Math.max(...validRequests) - Math.min(...validRequests);
-            if (timeSpan < 30000) { // If 3 messages within 30 seconds
+            if (timeSpan < 30000) { 
                 this.banIP(ip);
                 return {
                     allowed: false,
@@ -83,7 +80,6 @@ class RateLimitService {
             }
         }
 
-        // Enforce max requests per minute
         if (validRequests.length >= this.MAX_REQUESTS) {
             const oldestRequest = Math.min(...validRequests);
             const resetTime = Math.ceil((oldestRequest + this.WINDOW_SIZE_MS - now) / 1000);
@@ -93,7 +89,6 @@ class RateLimitService {
             };
         }
 
-        // Update requests
         validRequests.push(now);
         this.requests.set(ip, validRequests);
 
@@ -118,11 +113,9 @@ class RateLimitService {
         };
     }
 
-    // Cleanup old data periodically
     cleanup() {
         const now = Date.now();
         
-        // Cleanup requests
         for (const [ip, requests] of this.requests) {
             const validRequests = requests.filter(time => 
                 time > now - this.WINDOW_SIZE_MS
@@ -134,14 +127,12 @@ class RateLimitService {
             }
         }
 
-        // Cleanup bans
         for (const [ip, banInfo] of this.bannedIPs) {
             if (now >= banInfo.expiry) {
                 this.bannedIPs.delete(ip);
             }
         }
 
-        // Cleanup message history
         for (const [ip, history] of this.messageHistory) {
             const validHistory = history.filter(entry => 
                 entry.timestamp > now - this.SPAM_DETECTION.TIME_WINDOW

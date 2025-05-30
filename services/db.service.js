@@ -19,7 +19,6 @@ class DatabaseService {
                 serverSelectionTimeoutMS: 5000,
                 socketTimeoutMS: 45000,
                 family: 4,
-                // Removed deprecated options: useNewUrlParser and useUnifiedTopology
             };
 
             await mongoose.connect(process.env.MONGODB_URI, options);

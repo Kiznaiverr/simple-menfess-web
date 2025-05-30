@@ -8,7 +8,7 @@ async function verifyPassword(password) {
         const data = await response.json();
         return data.valid;
     } catch {
-        return false; // Silent fail, no error logging
+        return false; 
     }
 }
 
@@ -22,7 +22,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         window.location.href = '/dashboard';
     } else {
         errorMsg.classList.add('visible');
-        // Clear password field on error
         document.getElementById('admin-password').value = '';
     }
 });

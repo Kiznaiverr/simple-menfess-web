@@ -21,7 +21,6 @@ async function cleanDatabase() {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to database');
 
-        // First fix invalid reports
         console.log('Fixing invalid reports...');
         await mongoose.connection.db.collection('messages').updateMany(
             { reports: { $type: "number" } },
@@ -36,7 +35,6 @@ async function cleanDatabase() {
 
         for (const message of messages) {
             try {
-                // Deep clean function
                 const cleanText = (text) => {
                     if (!text) return '';
 
@@ -64,24 +62,21 @@ async function cleanDatabase() {
                         .replace(/-moz-binding|\bexpression\b|\bxml\b/gi, '')
                         .replace(/behavior:|@import|@charset/gi, '')
                         .replace(/animation(?:-\w+)?:/gi, '')
-                        .replace(/\(\s*[^)]*\s*\)/g, '')  // Remove function calls
-                        .replace(/[^\w\s.,!?-]/g, '');    // Only allow basic text chars
+                        .replace(/\(\s*[^)]*\s*\)/g, '')  
+                        .replace(/[^\w\s.,!?-]/g, '');    
 
                     return cleaned.trim();
                 };
 
-                // Clean all text fields
                 message.message = cleanText(message.message);
                 message.recipientName = cleanText(message.recipientName);
                 message.recipient = cleanText(message.recipient).toLowerCase();
 
-                // Ensure reports array is valid
                 if (!Array.isArray(message.reports)) {
                     message.reports = [];
                     message.isReported = false;
                 }
 
-                // Save cleaned message
                 await message.save();
                 console.log(`✅ Cleaned message ${message._id}`);
                 cleaned++;

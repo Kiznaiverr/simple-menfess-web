@@ -46,7 +46,6 @@ async function cleanBadWords() {
         }
 
         for (const message of messages) {
-            // Check recipient
             const hasRecipientBadWord = containsBadWord(message.recipientName);
             const hasMessageBadWord = containsBadWord(message.message);
 

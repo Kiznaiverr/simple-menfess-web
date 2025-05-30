@@ -29,13 +29,11 @@ const messageSchema = new mongoose.Schema({
     }
 });
 
-// Enhanced sanitization function
+// Fitur: Sanitasi mendalam untuk pesan dan nama
 function deepSanitize(text) {
     if (!text) return '';
 
-    // First normalize the text
     let cleaned = text.toLowerCase()
-        // Convert numbers to letters (leetspeak)
         .replace(/0/g, 'o')
         .replace(/1/g, 'i')
         .replace(/3/g, 'e')
@@ -43,13 +41,10 @@ function deepSanitize(text) {
         .replace(/5/g, 's')
         .replace(/7/g, 't')
         .replace(/8/g, 'b')
-        // Remove duplicate characters (e.g., "bodooooh")
         .replace(/(.)\1+/g, '$1')
-        // Remove special characters and spaces
         .replace(/[^\w\s]/g, '')
         .trim();
 
-    // DOMPurify for HTML/script removal
     cleaned = DOMPurify.sanitize(cleaned, {
         ALLOWED_TAGS: [],
         ALLOWED_ATTR: [],
@@ -63,7 +58,7 @@ function deepSanitize(text) {
     return cleaned;
 }
 
-// Add validation
+// Fitur: Validasi panjang pesan dan nama penerima
 messageSchema.pre('validate', function(next) {
     if (this.message && this.message.length > 500) {
         next(new Error('Message too long (max 500 characters)'));
@@ -76,12 +71,11 @@ messageSchema.pre('validate', function(next) {
     next();
 });
 
-// Update pre-save middleware
+// Fitur: Sanitasi sebelum simpan
 messageSchema.pre('save', function(next) {
     try {
         if (this.isModified('message')) {
             const sanitized = deepSanitize(this.message);
-            // Store original case but sanitize
             this.message = this.message.replace(/[^\w\s.,!?-]/g, '').trim();
         }
         if (this.isModified('recipientName')) {
@@ -98,7 +92,7 @@ messageSchema.pre('save', function(next) {
     }
 });
 
-// Add sanitization to existing documents
+// Fitur: Sanitasi dokumen yang sudah ada
 messageSchema.statics.sanitizeExisting = async function() {
     const messages = await this.find({});
     for (const message of messages) {

@@ -1,44 +1,29 @@
-/* 
- * Main Server Configuration File
- * Sets up Express server, routes, middleware and API endpoints
- */
+// Main Server Configuration File
 
-// Dependencies
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const db = require('./services/db.service');
 const os = require('os');
-const osUtils = require('os-utils');
 const mongoose = require('mongoose');
 const rateLimit = require('./services/rateLimit.service');
 require('dotenv').config();
 
 const app = express();
 
-// Environment Configuration
+// Environment & Database
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const BASE_URL = isDevelopment ? 'http://localhost:3000' : `https://${process.env.VERCEL_URL}`;
-
 console.log(`Running in ${isDevelopment ? 'development' : 'production'} mode`);
 
-// Database Connection
 db.connect()
-    .then(() => {
-        console.log('✅ Database connected successfully');
-    })
-    .catch(err => {
-        console.error('❌ Database connection error:', err);
-    });
+    .then(() => console.log('✅ Database connected successfully'))
+    .catch(err => console.error('❌ Database connection error:', err));
 
-// Middleware Configuration
-app.use(cors({
-    origin: '*', // Allow all origins in production
-    credentials: true
-}));
+// Middleware
+app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 
-// Maintenance mode middleware
 app.use((req, res, next) => {
     if (process.env.MAINTENANCE_MODE === 'true' && !req.path.includes('/assets/')) {
         return res.sendFile(path.join(__dirname, 'views/errors/maintenance.html'));
@@ -46,12 +31,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// API error handling middleware
 app.use('/api/*', async (req, res, next) => {
     try {
-        if (!db.isConnected()) {
-            await db.connect();
-        }
+        if (!db.isConnected()) await db.connect();
         next();
     } catch (error) {
         return res.status(503).json({ 
@@ -62,13 +44,11 @@ app.use('/api/*', async (req, res, next) => {
     }
 });
 
-// Add after existing middleware and before routes
 app.use((req, res, next) => {
     res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
     next();
 });
 
-// Update static file serving with absolute paths
 app.use('/assets', express.static(path.join(process.cwd(), 'public', 'assets')));
 app.use('/data', express.static(path.join(process.cwd(), 'public', 'data')));
 
@@ -90,7 +70,7 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/admin/login.html'));
 });
 
-// Dashboard route with API key injection
+// Dashboard with API key injection
 app.get('/dashboard', (req, res) => {
     const fs = require('fs');
     const dashboardPath = path.join(process.cwd(), 'views', 'admin', 'dashboard.html');
@@ -99,7 +79,6 @@ app.get('/dashboard', (req, res) => {
             console.error('Error serving dashboard:', err);
             return res.status(500).send('Server Error');
         }
-        // Inject API_KEY ke window.API_KEY
         const injectedHtml = html.replace(
             /window\.API_KEY\s*=\s*['"].*?['"];/,
             `window.API_KEY = '${process.env.API_KEY}';`
@@ -108,7 +87,6 @@ app.get('/dashboard', (req, res) => {
     });
 });
 
-// Legal pages
 app.get('/privacy', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/legal/privacy.html'));
 });
@@ -129,14 +107,9 @@ app.get('/api/messages', async (req, res) => {
 });
 
 const badwordsData = require('./data/badwords.json');
-
-// Add before API endpoints
 function containsBadwords(text) {
     if (!text) return false;
-
-    // Normalize the text
     const normalized = text.toLowerCase()
-        // Convert numbers to letters
         .replace(/0/g, 'o')
         .replace(/1/g, 'i')
         .replace(/3/g, 'e')
@@ -144,36 +117,22 @@ function containsBadwords(text) {
         .replace(/5/g, 's')
         .replace(/7/g, 't')
         .replace(/8/g, 'b');
-
-    // Split into words and clean each word
-    const words = normalized
-        .split(/\s+/)
-        .map(word => word.replace(/[^\w\s]/g, ''));
-    
-    // Check each word against badwords list
+    const words = normalized.split(/\s+/).map(word => word.replace(/[^\w\s]/g, ''));
     for (const word of words) {
         const foundBadWord = badwordsData.badwords.find(badword => {
-            // Clean badword the same way
-            const normalizedBadword = badword
-                .toLowerCase()
-                .replace(/[^\w\s]/g, '');
-            
-            // Only match if it's a whole word
+            const normalizedBadword = badword.toLowerCase().replace(/[^\w\s]/g, '');
             return word === normalizedBadword;
         });
-
         if (foundBadWord && !badwordsData.exceptions.includes(word)) {
             return text.match(new RegExp(`\\b${foundBadWord}\\b`, 'i'))?.[0] || foundBadWord;
         }
     }
-
     return false;
 }
 
-// Add rate limit cleanup every hour
 setInterval(() => rateLimit.cleanup(), 60 * 60 * 1000);
 
-// Middleware untuk validasi API key pada POST dan DELETE /api/messages
+// API Key Middleware
 function requireApiKey(req, res, next) {
     const apiKey = req.headers['x-api-key'];
     if (!apiKey || apiKey !== process.env.API_KEY) {
@@ -182,44 +141,29 @@ function requireApiKey(req, res, next) {
     next();
 }
 
-// Update POST /api/messages endpoint
+// POST/DELETE with API key
 app.post('/api/messages', requireApiKey, async (req, res) => {
     try {
-        // Get client IP
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        
-        // Check rate limit
         const rateLimitCheck = rateLimit.checkRateLimit(ip);
         if (!rateLimitCheck.allowed) {
-            return res.status(429).json({ 
-                error: rateLimitCheck.error
-            });
+            return res.status(429).json({ error: rateLimitCheck.error });
         }
-
         const { recipient, message } = req.body;
-
-        // Check for badwords in message
         const badWordInMessage = containsBadwords(message);
         if (badWordInMessage) {
-            return res.status(400).json({ 
-                error: `Pesan mengandung kata tidak pantas "${badWordInMessage}"`
-            });
+            return res.status(400).json({ error: `Pesan mengandung kata tidak pantas "${badWordInMessage}"` });
         }
-
-        // Check for badwords in recipient name
         const badWordInRecipient = containsBadwords(recipient);
         if (badWordInRecipient) {
-            return res.status(400).json({
-                error: `Nama penerima mengandung kata tidak pantas "${badWordInRecipient}"`
-            });
+            return res.status(400).json({ error: `Nama penerima mengandung kata tidak pantas "${badWordInRecipient}"` });
         }
-
         const newMessage = await db.createMessage({
             recipient: recipient.toLowerCase(),
             recipientName: recipient,
             message,
             isPublic: true,
-            ip: ip // Optional: store IP for tracking
+            ip: ip
         });
         res.json(newMessage);
     } catch (error) {
@@ -227,23 +171,17 @@ app.post('/api/messages', requireApiKey, async (req, res) => {
     }
 });
 
-// DELETE single message (pakai API key)
 app.delete('/api/messages/:id', requireApiKey, async (req, res) => {
     try {
         await db.deleteMessage(req.params.id);
         const messages = await db.getAllMessages();
         const reportedMessages = await db.getReportedMessages();
-        res.json({ 
-            success: true,
-            messages,
-            reportedMessages 
-        });
+        res.json({ success: true, messages, reportedMessages });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting message' });
     }
 });
 
-// DELETE bulk messages (pakai API key)
 app.delete('/api/messages', requireApiKey, async (req, res) => {
     try {
         const { ids } = req.body;
@@ -254,7 +192,7 @@ app.delete('/api/messages', requireApiKey, async (req, res) => {
     }
 });
 
-// API Endpoints - Admin
+// Admin & System
 app.post('/api/verify-admin', (req, res) => {
     try {
         const { password } = req.body;
@@ -262,7 +200,6 @@ app.post('/api/verify-admin', (req, res) => {
             Buffer.from(password || ''),
             Buffer.from(process.env.ADMIN_PASSWORD)
         );
-        
         res.json({ valid: isValid });
     } catch {
         res.status(401).json({ valid: false });
@@ -270,40 +207,25 @@ app.post('/api/verify-admin', (req, res) => {
 });
 
 // System Monitoring
-// CPU usage tracking variables
 let startTime = Date.now();
 let startUsage = process.cpuUsage();
-
-/**
- * Calculates current CPU usage percentage
- * @returns {number} CPU usage percentage (0-100)
- */
 function getCPUUsage() {
     const now = Date.now();
     const end = process.cpuUsage(startUsage);
     const diff = now - startTime;
-
     const percentage = 100 * (end.user + end.system) / (diff * 1000);
-    
     startTime = now;
     startUsage = process.cpuUsage();
-    
     return Math.min(100, Math.round(percentage));
 }
+const MONGODB_FREE_TIER_LIMIT = 512;
 
-const MONGODB_FREE_TIER_LIMIT = 512; // 512MB limit for free tier
-
-// System information endpoint
 app.get('/api/system-info', async (req, res) => {
     try {
         const cpuUsage = getCPUUsage();
         const totalMem = os.totalmem();
         const freeMem = os.freemem();
-
-        // Get MongoDB stats
         const dbStats = await mongoose.connection.db.stats();
-        
-        // Helper function to format byte sizes
         function formatBytes(bytes) {
             if (bytes === 0) return '0 B';
             const k = 1024;
@@ -311,10 +233,8 @@ app.get('/api/system-info', async (req, res) => {
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
         }
-
         const dataSize = dbStats.dataSize + dbStats.indexSize;
         const maxSize = MONGODB_FREE_TIER_LIMIT * 1024 * 1024; 
-        
         const systemInfo = {
             lastUpdate: new Date().toISOString(),
             dbStatus: db.isConnected() ? 'connected' : 'disconnected',
@@ -342,7 +262,6 @@ app.get('/api/system-info', async (req, res) => {
                 usagePercent: ((dataSize / maxSize) * 100).toFixed(1)
             }
         };
-
         res.json(systemInfo);
     } catch (error) {
         console.error('Error fetching system info:', error);
@@ -350,12 +269,11 @@ app.get('/api/system-info', async (req, res) => {
     }
 });
 
-// Offline Page
+// Other Features
 app.get('/offline', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/errors/offline.html'));
 });
 
-// API Endpoints - Reported Messages
 app.post('/api/messages/:id/report', async (req, res) => {
     try {
         const { reason } = req.body;
@@ -384,24 +302,21 @@ app.post('/api/messages/:id/dismiss-report', async (req, res) => {
     }
 });
 
-// Add banned page route
 app.get('/banned', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/errors/banned.html'));
 });
 
-// Add check-ban endpoint
 app.get('/api/check-ban', (req, res) => {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const banInfo = rateLimit.getBanInfo(ip);
     res.json(banInfo);
 });
 
-// Error Page
+// Error Handling
 app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'views/errors/404.html'));
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
     console.error('Global error:', err);
     res.status(500).json({
@@ -409,79 +324,21 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Add input validation middleware
+// Input Validation
 const validateInput = (req, res, next) => {
     const { recipient, message } = req.body;
-    
-    // Check for script tags or suspicious patterns
     const suspicious = /<[^>]*script|javascript:|data:|vbscript:|file:|about:|blob:/i;
-    
     if (suspicious.test(recipient) || suspicious.test(message)) {
-        return res.status(400).json({
-            error: 'Invalid input detected'
-        });
+        return res.status(400).json({ error: 'Invalid input detected' });
     }
-    
-    // Limit input length
     if (message && message.length > 500) {
-        return res.status(400).json({
-            error: 'Message too long (max 500 characters)'
-        });
+        return res.status(400).json({ error: 'Message too long (max 500 characters)' });
     }
-    
     if (recipient && recipient.length > 50) {
-        return res.status(400).json({
-            error: 'Recipient name too long (max 50 characters)'
-        });
+        return res.status(400).json({ error: 'Recipient name too long (max 50 characters)' });
     }
-    
     next();
 };
-
-// Apply validation & API key middleware to message endpoints
-app.post('/api/messages', requireApiKey, validateInput, async (req, res) => {
-    try {
-        // Get client IP
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        
-        // Check rate limit
-        const rateLimitCheck = rateLimit.checkRateLimit(ip);
-        if (!rateLimitCheck.allowed) {
-            return res.status(429).json({ 
-                error: rateLimitCheck.error
-            });
-        }
-
-        const { recipient, message } = req.body;
-
-        // Check for badwords in message
-        const badWordInMessage = containsBadwords(message);
-        if (badWordInMessage) {
-            return res.status(400).json({ 
-                error: `Pesan mengandung kata tidak pantas "${badWordInMessage}"`
-            });
-        }
-
-        // Check for badwords in recipient name
-        const badWordInRecipient = containsBadwords(recipient);
-        if (badWordInRecipient) {
-            return res.status(400).json({
-                error: `Nama penerima mengandung kata tidak pantas "${badWordInRecipient}"`
-            });
-        }
-
-        const newMessage = await db.createMessage({
-            recipient: recipient.toLowerCase(),
-            recipientName: recipient,
-            message,
-            isPublic: true,
-            ip: ip // Optional: store IP for tracking
-        });
-        res.json(newMessage);
-    } catch (error) {
-        res.status(500).json({ error: 'Error saving message' });
-    }
-});
 
 // Server Startup
 const PORT = process.env.PORT || 3000;

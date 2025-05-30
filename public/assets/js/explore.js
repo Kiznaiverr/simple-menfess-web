@@ -132,11 +132,9 @@ function showReportModal(id) {
     `;
     document.body.appendChild(modal);
 
-    // Focus textarea and handle Enter key
     const textarea = modal.querySelector('#report-reason');
     setTimeout(() => textarea.focus(), 100);
 
-    // Handle Ctrl+Enter submit
     textarea.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.ctrlKey) {
             e.preventDefault();
@@ -164,7 +162,6 @@ async function submitReport(event, id) {
         });
 
         if (response.ok) {
-            // Show success notification
             const notification = document.createElement('div');
             notification.className = 'fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg z-50';
             notification.innerHTML = `
@@ -175,13 +172,11 @@ async function submitReport(event, id) {
             `;
             document.body.appendChild(notification);
 
-            // Remove notification after 3 seconds
             setTimeout(() => {
                 notification.classList.add('opacity-0');
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
 
-            // Close modal
             closeReportModal(document.getElementById('report-reason'));
         }
     } catch (error) {
