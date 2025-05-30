@@ -80,7 +80,9 @@ function displayMessages(messages) {
 
 async function loadMessages() {
     try {
-        const response = await fetch('/api/messages');
+        const response = await fetch('/api/messages', {
+            headers: window.__SERVER_HEADERS__ // Headers injected by server
+        });
         if (!response.ok) {
             if (response.status === 503) {
                 // Show retryable error
@@ -126,6 +128,7 @@ async function sendMessage(recipient, message) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                ...window.__SERVER_HEADERS__ // Headers injected by server
             },
             body: JSON.stringify({ recipient, message })
         });
