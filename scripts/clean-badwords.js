@@ -46,6 +46,24 @@ async function cleanBadWords() {
         }
 
         for (const message of messages) {
+            if (
+                !message.recipient ||
+                !message.recipientName ||
+                !message.message ||
+                !message.recipient.trim() ||
+                !message.recipientName.trim() ||
+                !message.message.trim()
+            ) {
+                try {
+                    await Message.deleteOne({ _id: message._id });
+                    console.log(`❌ Deleted message ${message._id} - Empty field`);
+                    deleted++;
+                } catch (err) {
+                    console.error(`Error deleting message ${message._id}:`, err);
+                }
+                continue;
+            }
+
             const hasRecipientBadWord = containsBadWord(message.recipientName);
             const hasMessageBadWord = containsBadWord(message.message);
 
