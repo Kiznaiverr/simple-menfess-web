@@ -59,10 +59,18 @@ async function loadMessages() {
     }
 }
 
+let currentPage = 1;
+const pageSize = 10; // Messages per page
+
 function displayMessages(messagesToShow = messages) {
     const tbody = document.getElementById('messages-table');
     tbody.innerHTML = '';
-    messagesToShow.forEach(msg => {
+    
+    // Get paginated slice of messages
+    const start = (currentPage - 1) * pageSize;
+    const pagedMessages = messagesToShow.slice(start, start + pageSize);
+    
+    pagedMessages.forEach(msg => {
         const tr = document.createElement('tr');
         const date = new Date(msg.timestamp);
         tr.innerHTML = `
@@ -89,7 +97,85 @@ function displayMessages(messagesToShow = messages) {
         `;
         tbody.appendChild(tr);
     });
+
+    renderPagination(messagesToShow.length);
     updateDeleteButton();
+}
+
+function renderPagination(totalItems) {
+    const container = document.getElementById('messages-pagination');
+    if (!container) return;
+
+    const totalPages = Math.ceil(totalItems / pageSize);
+    container.innerHTML = '';
+
+    const prevBtn = createPaginationButton(
+        '<i class="fas fa-chevron-left"></i>',
+        () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayMessages();
+            }
+        },
+        currentPage === 1
+    );
+    container.appendChild(prevBtn);
+
+    for (let i = 1; i <= totalPages; i++) {
+        if (
+            i === 1 || 
+            i === totalPages || 
+            (i >= currentPage - 1 && i <= currentPage + 1)
+        ) {
+            const btn = createPaginationButton(
+                i,
+                () => {
+                    currentPage = i;
+                    displayMessages();
+                },
+                false,
+                i === currentPage
+            );
+            container.appendChild(btn);
+        } else if (
+            i === currentPage - 2 || 
+            i === currentPage + 2
+        ) {
+            const dots = document.createElement('span');
+            dots.className = 'px-2 text-gray-500';
+            dots.textContent = '...';
+            container.appendChild(dots);
+        }
+    }
+
+    const nextBtn = createPaginationButton(
+        '<i class="fas fa-chevron-right"></i>',
+        () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayMessages();
+            }
+        },
+        currentPage === totalPages
+    );
+    container.appendChild(nextBtn);
+}
+
+function createPaginationButton(content, onClick, disabled = false, isActive = false) {
+    const button = document.createElement('button');
+    button.innerHTML = content;
+    button.className = `
+        px-3 py-2 mx-1 rounded-lg
+        ${isActive 
+            ? 'bg-indigo-500 text-white' 
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+    `;
+    if (!disabled) {
+        button.onclick = onClick;
+    }
+    button.disabled = disabled;
+    return button;
 }
 
 function updateDeleteButton() {
@@ -234,6 +320,7 @@ updateSystemInfo();
 function setupSearch() {
     const searchInput = document.getElementById('message-search-table');
     searchInput.addEventListener('input', (e) => {
+        currentPage = 1; // Reset to first page on search
         const searchTerm = e.target.value.toLowerCase();
         const filteredMessages = messages.filter(msg => 
             msg.recipientName.toLowerCase().includes(searchTerm) ||
