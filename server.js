@@ -12,7 +12,6 @@ const os = require('os');
 const osUtils = require('os-utils');
 const mongoose = require('mongoose');
 const rateLimit = require('./services/rateLimit.service');
-const security = require('./services/security.service');
 require('dotenv').config();
 
 const app = express();
@@ -72,30 +71,6 @@ app.use((req, res, next) => {
 // Update static file serving with absolute paths
 app.use('/assets', express.static(path.join(process.cwd(), 'public', 'assets')));
 app.use('/data', express.static(path.join(process.cwd(), 'public', 'data')));
-
-// Security middleware for API routes
-const secureApi = (req, res, next) => {
-    // Skip for non-API routes
-    if (!req.path.startsWith('/api/')) {
-        return next();
-    }
-
-    const serverToken = req.headers['x-server-token'];
-    const timestamp = req.headers['x-timestamp'];
-    const signature = req.headers['x-signature'];
-
-    if (!security.verifyRequest(serverToken, timestamp, signature)) {
-        return res.status(403).json({ 
-            error: 'Unauthorized access',
-            code: 'INVALID_SERVER_AUTH'
-        });
-    }
-
-    next();
-};
-
-// Apply security middleware before routes
-app.use(secureApi);
 
 // View Routes
 app.get('/', (req, res) => {
@@ -488,35 +463,6 @@ app.post('/api/messages', validateInput, async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Error saving message' });
     }
-});
-
-// Update HTML response middleware to inject server headers (pindahkan sebelum route)
-app.use((req, res, next) => {
-    const originalSend = res.send;
-    res.send = function(content) {
-        if (typeof content === 'string' && content.includes('</head>')) {
-            const headers = security.getRequestHeaders();
-            const script = `
-                <script>
-                    window.__SERVER_HEADERS__ = ${JSON.stringify(headers)};
-                    // Refresh headers every 4 minutes
-                    setInterval(() => {
-                        fetch('/refresh-headers')
-                            .then(r => r.json())
-                            .then(h => window.__SERVER_HEADERS__ = h);
-                    }, 240000);
-                </script>
-            `;
-            content = content.replace('</head>', script + '</head>');
-        }
-        originalSend.call(this, content);
-    };
-    next();
-});
-
-// Add header refresh endpoint (pindahkan sebelum route)
-app.get('/refresh-headers', (req, res) => {
-    res.json(security.getRequestHeaders());
 });
 
 // Server Startup
