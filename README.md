@@ -144,16 +144,17 @@ The system includes smart error handling:
 
 ## 🛡️ Environment Variables
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| PORT | Server port number | 3000 | No |
-| NODE_ENV | Environment mode | development | No |
-| MONGODB_URI | MongoDB connection string | - | Yes |
-| DB_PASSWORD | Database password | - | Yes |
-| ADMIN_PASSWORD | Admin dashboard access | - | Yes |
-| SITE_NAME | Website name | SendMenfess | No |
-| SITE_URL | Website URL | - | Yes |
-| MAINTENANCE_MODE | Enable maintenance mode | false | No |
+| Variable      | Description                      | Default      | Required |
+|---------------|----------------------------------|--------------|----------|
+| PORT          | Server port number               | 3000         | No       |
+| NODE_ENV      | Environment mode                 | development  | No       |
+| MONGODB_URI   | MongoDB connection string        | -            | Yes      |
+| DB_PASSWORD   | Database password                | -            | Yes      |
+| ADMIN_PASSWORD| Admin dashboard access           | -            | Yes      |
+| SITE_NAME     | Website name                     | SendMenfess  | No       |
+| SITE_URL      | Website URL                      | -            | Yes      |
+| MAINTENANCE_MODE | Enable maintenance mode       | false        | No       |
+| **API_KEY**   | **API key for admin actions (POST/DELETE /api/messages)** | - | Yes |
 
 ## 🌟 Key Features
 

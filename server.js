@@ -90,13 +90,22 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/admin/login.html'));
 });
 
+// Dashboard route with API key injection
 app.get('/dashboard', (req, res) => {
-    try {
-        res.sendFile(path.join(process.cwd(), 'views', 'admin', 'dashboard.html'));
-    } catch (error) {
-        console.error('Error serving dashboard:', error);
-        res.status(500).send('Server Error');
-    }
+    const fs = require('fs');
+    const dashboardPath = path.join(process.cwd(), 'views', 'admin', 'dashboard.html');
+    fs.readFile(dashboardPath, 'utf8', (err, html) => {
+        if (err) {
+            console.error('Error serving dashboard:', err);
+            return res.status(500).send('Server Error');
+        }
+        // Inject API_KEY ke window.API_KEY
+        const injectedHtml = html.replace(
+            /window\.API_KEY\s*=\s*['"].*?['"];/,
+            `window.API_KEY = '${process.env.API_KEY}';`
+        );
+        res.send(injectedHtml);
+    });
 });
 
 // Legal pages
@@ -164,8 +173,17 @@ function containsBadwords(text) {
 // Add rate limit cleanup every hour
 setInterval(() => rateLimit.cleanup(), 60 * 60 * 1000);
 
+// Middleware untuk validasi API key pada POST dan DELETE /api/messages
+function requireApiKey(req, res, next) {
+    const apiKey = req.headers['x-api-key'];
+    if (!apiKey || apiKey !== process.env.API_KEY) {
+        return res.status(401).json({ error: 'Unauthorized: Invalid API key' });
+    }
+    next();
+}
+
 // Update POST /api/messages endpoint
-app.post('/api/messages', async (req, res) => {
+app.post('/api/messages', requireApiKey, async (req, res) => {
     try {
         // Get client IP
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -209,8 +227,8 @@ app.post('/api/messages', async (req, res) => {
     }
 });
 
-// Delete single message and return updated lists
-app.delete('/api/messages/:id', async (req, res) => {
+// DELETE single message (pakai API key)
+app.delete('/api/messages/:id', requireApiKey, async (req, res) => {
     try {
         await db.deleteMessage(req.params.id);
         const messages = await db.getAllMessages();
@@ -225,8 +243,8 @@ app.delete('/api/messages/:id', async (req, res) => {
     }
 });
 
-// Bulk delete messages
-app.delete('/api/messages', async (req, res) => {
+// DELETE bulk messages (pakai API key)
+app.delete('/api/messages', requireApiKey, async (req, res) => {
     try {
         const { ids } = req.body;
         await db.deleteMessages(ids);
@@ -420,8 +438,8 @@ const validateInput = (req, res, next) => {
     next();
 };
 
-// Apply validation to message endpoints
-app.post('/api/messages', validateInput, async (req, res) => {
+// Apply validation & API key middleware to message endpoints
+app.post('/api/messages', requireApiKey, validateInput, async (req, res) => {
     try {
         // Get client IP
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
