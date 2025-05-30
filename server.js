@@ -7,6 +7,7 @@ const db = require('./services/db.service');
 const os = require('os');
 const mongoose = require('mongoose');
 const rateLimit = require('./services/rateLimit.service');
+const { verifyApiKey } = require('./middleware/auth.middleware');
 require('dotenv').config();
 
 const app = express();
@@ -290,6 +291,78 @@ app.get('/api/check-ban', (req, res) => {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const banInfo = rateLimit.getBanInfo(ip);
     res.json(banInfo);
+});
+
+// Proxy route that requires API key
+app.get('/api/proxy/messages', verifyApiKey, async (req, res) => {
+    try {
+        const messages = await db.getAllMessages();
+        res.json({ messages });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ error: 'Error fetching messages', messages: [] });
+    }
+});
+
+app.post('/api/proxy/messages', verifyApiKey, async (req, res) => {
+    try {
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        const rateLimitCheck = rateLimit.checkRateLimit(ip);
+        if (!rateLimitCheck.allowed) {
+            return res.status(429).json({ error: rateLimitCheck.error });
+        }
+        const { recipient, message } = req.body;
+        const badWordInMessage = containsBadwords(message);
+        if (badWordInMessage) {
+            return res.status(400).json({ error: `Pesan mengandung kata tidak pantas "${badWordInMessage}"` });
+        }
+        const badWordInRecipient = containsBadwords(recipient);
+        if (badWordInRecipient) {
+            return res.status(400).json({ error: `Nama penerima mengandung kata tidak pantas "${badWordInRecipient}"` });
+        }
+        const newMessage = await db.createMessage({
+            recipient: recipient.toLowerCase(),
+            recipientName: recipient,
+            message,
+            isPublic: true,
+            ip: ip
+        });
+        res.json(newMessage);
+    } catch (error) {
+        res.status(500).json({ error: 'Error saving message' });
+    }
+});
+
+// Modify existing /api/messages route to act as proxy
+app.get('/api/messages', async (req, res) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/proxy/messages`, {
+            headers: {
+                'x-api-key': process.env.API_KEY
+            }
+        });
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching messages', messages: [] });
+    }
+});
+
+app.post('/api/messages', async (req, res) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/proxy/messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.API_KEY
+            },
+            body: JSON.stringify(req.body)
+        });
+        const data = await response.json();
+        res.status(response.status).json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error saving message' });
+    }
 });
 
 // Error Handling
