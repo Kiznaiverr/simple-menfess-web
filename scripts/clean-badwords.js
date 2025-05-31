@@ -6,7 +6,7 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 const mongoose = require('mongoose');
 const Message = require('../models/Message');
-const badwordsData = require('../data/badwords.json');
+const badwords = require('indonesian-badwords');
 
 async function cleanBadWords() {
     try {
@@ -19,31 +19,6 @@ async function cleanBadWords() {
 
         let cleaned = 0;
         let deleted = 0;
-
-        function containsBadWord(text) {
-            if (!text) return false;
-
-            const normalized = text.toLowerCase()
-                .replace(/0/g, 'o')
-                .replace(/1/g, 'i')
-                .replace(/3/g, 'e')
-                .replace(/4/g, 'a')
-                .replace(/5/g, 's')
-                .replace(/7/g, 't')
-                .replace(/8/g, 'b')
-                .replace(/(.)\1+/g, '$1')
-                .replace(/[^\w\s]/g, '')
-                .trim();
-
-            for (const badword of badwordsData.badwords) {
-                const normalizedBadword = badword.toLowerCase()
-                    .replace(/[^\w]/g, '');
-                if (normalized.includes(normalizedBadword)) {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         for (const message of messages) {
             if (
@@ -64,8 +39,8 @@ async function cleanBadWords() {
                 continue;
             }
 
-            const hasRecipientBadWord = containsBadWord(message.recipientName);
-            const hasMessageBadWord = containsBadWord(message.message);
+            const hasRecipientBadWord = badwords.flag(message.recipientName);
+            const hasMessageBadWord = badwords.flag(message.message);
 
             if (hasRecipientBadWord || hasMessageBadWord) {
                 try {
@@ -78,21 +53,22 @@ async function cleanBadWords() {
                 continue;
             }
 
-            // Clean and update message
-            message.recipientName = message.recipientName
-                .replace(/[^\w\s.,!?-]/g, '')
-                .trim();
-            message.message = message.message
-                .replace(/[^\w\s.,!?-]/g, '')
-                .trim();
-            message.recipient = message.recipientName.toLowerCase();
+            // Clean and update message if needed
+            const cleanedMessage = badwords.filter(message.message);
+            const cleanedRecipient = badwords.filter(message.recipientName);
 
-            try {
-                await message.save();
-                console.log(`✅ Cleaned message ${message._id}`);
-                cleaned++;
-            } catch (err) {
-                console.error(`Error saving message ${message._id}:`, err);
+            if (cleanedMessage !== message.message || cleanedRecipient !== message.recipientName) {
+                message.message = cleanedMessage;
+                message.recipientName = cleanedRecipient;
+                message.recipient = cleanedRecipient.toLowerCase();
+
+                try {
+                    await message.save();
+                    console.log(`✅ Cleaned message ${message._id}`);
+                    cleaned++;
+                } catch (err) {
+                    console.error(`Error saving message ${message._id}:`, err);
+                }
             }
         }
 

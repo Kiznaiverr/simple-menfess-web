@@ -8,6 +8,7 @@ const os = require('os');
 const mongoose = require('mongoose');
 const rateLimit = require('./services/rateLimit.service');
 const jwt = require('jsonwebtoken');
+const badwords = require('indonesian-badwords');
 require('dotenv').config();
 
 const app = express();
@@ -114,30 +115,6 @@ app.get('/api/messages', async (req, res) => {
     }
 });
 
-const badwordsData = require('./data/badwords.json');
-function containsBadwords(text) {
-    if (!text) return false;
-    const normalized = text.toLowerCase()
-        .replace(/0/g, 'o')
-        .replace(/1/g, 'i')
-        .replace(/3/g, 'e')
-        .replace(/4/g, 'a')
-        .replace(/5/g, 's')
-        .replace(/7/g, 't')
-        .replace(/8/g, 'b');
-    const words = normalized.split(/\s+/).map(word => word.replace(/[^\w\s]/g, ''));
-    for (const word of words) {
-        const foundBadWord = badwordsData.badwords.find(badword => {
-            const normalizedBadword = badword.toLowerCase().replace(/[^\w\s]/g, '');
-            return word === normalizedBadword;
-        });
-        if (foundBadWord && !badwordsData.exceptions.includes(word)) {
-            return text.match(new RegExp(`\\b${foundBadWord}\\b`, 'i'))?.[0] || foundBadWord;
-        }
-    }
-    return false;
-}
-
 setInterval(() => rateLimit.cleanup(), 60 * 60 * 1000);
 
 // POST/DELETE with API key
@@ -149,14 +126,22 @@ app.post('/api/messages', async (req, res) => {
             return res.status(429).json({ error: rateLimitCheck.error });
         }
         const { recipient, message } = req.body;
-        const badWordInMessage = containsBadwords(message);
-        if (badWordInMessage) {
-            return res.status(400).json({ error: `Pesan mengandung kata tidak pantas "${badWordInMessage}"` });
+
+        // Check for bad words in message and recipient
+        if (badwords.flag(message)) {
+            const badWordsList = badwords.badwords(message);
+            return res.status(400).json({ 
+                error: `Pesan mengandung kata tidak pantas: ${badWordsList.join(', ')}` 
+            });
         }
-        const badWordInRecipient = containsBadwords(recipient);
-        if (badWordInRecipient) {
-            return res.status(400).json({ error: `Nama penerima mengandung kata tidak pantas "${badWordInRecipient}"` });
+
+        if (badwords.flag(recipient)) {
+            const badWordsList = badwords.badwords(recipient);
+            return res.status(400).json({ 
+                error: `Nama penerima mengandung kata tidak pantas: ${badWordsList.join(', ')}` 
+            });
         }
+
         const newMessage = await db.createMessage({
             recipient: recipient.toLowerCase(),
             recipientName: recipient,
