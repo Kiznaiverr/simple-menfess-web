@@ -1,7 +1,7 @@
-# 💌 SendMenfess - Anonymous Message Web App
+# 💌 UMNUfes - Anonymous Message Web App
 
 <div align="center">
-  <img src="https://pomf2.lain.la/f/onfz3s58.png" alt="SendMenfess Preview" width="100%">
+  <img src="https://pomf2.lain.la/f/onfz3s58.png" alt="UMNUfes Preview" width="100%">
   
   ![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)
   ![Express Version](https://img.shields.io/badge/express-%5E4.18.2-blue)
@@ -60,7 +60,7 @@ Visit `http://your-web.com` 🎉
 
 ## 📂 Project Structure
 ```
-sendmenfess/
+UMNUfes/
 ├── public/
 │   └── assets/
 │       ├── css/
@@ -151,7 +151,7 @@ The system includes smart error handling:
 | MONGODB_URI   | MongoDB connection string        | -            | Yes      |
 | DB_PASSWORD   | Database password                | -            | Yes      |
 | ADMIN_PASSWORD| Admin dashboard access           | -            | Yes      |
-| SITE_NAME     | Website name                     | SendMenfess  | No       |
+| SITE_NAME     | Website name                     | UMNUfes  | No       |
 | SITE_URL      | Website URL                      | -            | Yes      |
 | MAINTENANCE_MODE | Enable maintenance mode       | false        | No       |
 | **API_KEY**   | **API key for admin actions (POST/DELETE /api/messages)** | - | Yes |
