@@ -13,17 +13,16 @@
 - 🔒 **100% Anonymous** - No login required for sending messages
 - 🚀 **Real-time Updates** - Messages appear instantly
 - 🔍 **Smart Search** - Search by recipient or message content
-- 🚫 **Content Filtering** - Multi-language bad word detection & filtering
-- 🌐 **Language Support** - Filters words in ID, EN, TH, VN, PH
-- ⚠️ **Smart Alerts** - Shows detected inappropriate words
+- 🚫 **Content Filtering** - Shows detected inappropriate words
 - 📱 **Fully Responsive** - Works perfectly on all devices
 - 🎨 **Modern UI** - Clean and intuitive TailwindCSS interface
 - 🔐 **Admin Panel** - Secure message management dashboard
-- ⚡ **Session Management** - Auto logout after 5 minutes inactivity
+- ⚡ **Session Management** - Auto logout admin after 5 minutes inactivity
 - 📊 **Storage Monitor** - MongoDB Free Tier storage monitoring
 - 🛑 **Maintenance Mode** - Redirect all users to maintenance page except admin
 - 🛡️ **Error Popup** - User-friendly error popups for DB/network issues
 - 📄 **Legal Pages** - Privacy Policy & Terms of Service included
+- 💬 **Discord Integration** - Support tickets sent directly to Discord channel
 
 ## 🚀 Quick Start
 
@@ -151,10 +150,12 @@ The system includes smart error handling:
 | MONGODB_URI   | MongoDB connection string        | -            | Yes      |
 | DB_PASSWORD   | Database password                | -            | Yes      |
 | ADMIN_PASSWORD| Admin dashboard access           | -            | Yes      |
-| SITE_NAME     | Website name                     | UMNUfes  | No       |
+| SITE_NAME     | Website name                     | UMNUfes      | No       |
 | SITE_URL      | Website URL                      | -            | Yes      |
 | MAINTENANCE_MODE | Enable maintenance mode       | false        | No       |
 | **API_KEY**   | **API key for admin actions (POST/DELETE /api/messages)** | - | Yes |
+| **JWT_SECRET**| **JWT authentication secret**    | -            | Yes      |
+| **DISCORD_WEBHOOK_URL** | **Discord webhook for support tickets** | -   | Yes      |
 
 ## 🌟 Key Features
 
