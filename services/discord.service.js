@@ -3,7 +3,6 @@ require('dotenv').config();
 
 class DiscordService {
     constructor() {
-        // Validate webhook URL on service initialization
         const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
         if (!webhookUrl || !webhookUrl.includes('discord.com/api/webhooks')) {
             console.error('⚠️ Invalid Discord webhook URL configuration');
@@ -23,28 +22,37 @@ class DiscordService {
         try {
             console.log('🔄 Sending to Discord:', this.webhookUrl.substring(0, 40) + '...');
 
+            const typeConfig = {
+                bug: { color: 0xED4245, emoji: '🐛', title: 'Bug Report' },
+                feature: { color: 0x57F287, emoji: '✨', title: 'Feature Request' },
+                content: { color: 0xFEE75C, emoji: '⚠️', title: 'Content Issue' },
+                other: { color: 0x5865F2, emoji: '📫', title: 'Support Request' }
+            };
+
+            const config = typeConfig[data.type] || typeConfig.other;
+
             const payload = {
                 username: 'UMNUfes Support',
                 avatar_url: 'https://pomf2.lain.la/f/3nykooiu.jpg',
                 embeds: [{
-                    title: '📫 New Support Request',
-                    color: 0x5865F2,
+                    title: `${config.emoji} New ${config.title}`,
+                    color: config.color,
+                    description: `**${data.description}**`,  
                     fields: [
                         {
-                            name: '🏷️ Type',
-                            value: data.type,
+                            name: '📱 Contact Information',
+                            value: data.contact ? `📧 ${data.contact}` : '_No contact provided_',
                             inline: true
                         },
                         {
-                            name: '📧 Contact',
-                            value: data.contact || 'Not provided',
+                            name: '⏰ Submitted',
+                            value: `<t:${Math.floor(Date.now() / 1000)}:R>`,
                             inline: true
-                        },
-                        {
-                            name: '📝 Description',
-                            value: data.description
                         }
                     ],
+                    footer: {
+                        text: `UMNUfes Support System • ${data.type.toUpperCase()}`
+                    },
                     timestamp: new Date().toISOString()
                 }]
             };
