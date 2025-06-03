@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const rateLimit = require('./services/rateLimit.service');
 const jwt = require('jsonwebtoken');
 const badwords = require('indonesian-badwords');
+const discordService = require('./services/discord.service');
 require('dotenv').config();
 
 const app = express();
@@ -304,6 +305,47 @@ app.get('/api/check-ban', (req, res) => {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const banInfo = rateLimit.getBanInfo(ip);
     res.json(banInfo);
+});
+
+// Support Endpoint
+app.post('/api/support', async (req, res) => {
+    try {
+        const { type, description, contact } = req.body;
+        
+        if (!type || !description) {
+            return res.status(400).json({ 
+                error: 'Missing required fields',
+                details: {
+                    type: !type ? 'Type is required' : null,
+                    description: !description ? 'Description is required' : null
+                }
+            });
+        }
+
+        console.log('Processing support request:', { type, description, contact });
+
+        const sent = await discordService.sendSupportNotification({
+            type,
+            description,
+            contact: contact || 'Not provided'
+        });
+
+        if (!sent) {
+            console.error('Failed to send Discord notification');
+            throw new Error('Failed to send notification to support team');
+        }
+
+        res.json({ 
+            success: true,
+            message: 'Support request sent successfully'
+        });
+    } catch (error) {
+        console.error('Support submission error:', error);
+        res.status(500).json({ 
+            error: 'Failed to submit support request',
+            message: error.message
+        });
+    }
 });
 
 // Error Handling

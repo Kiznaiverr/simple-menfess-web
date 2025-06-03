@@ -137,27 +137,33 @@
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
 
             try {
+                const type = document.getElementById('issue-type').value;
+                const description = document.getElementById('description').value;
+                const contact = document.getElementById('contact').value;
+
+                if (!description.trim()) {
+                    throw new Error('Deskripsi harus diisi');
+                }
+
                 const response = await fetch('/api/support', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        type: document.getElementById('issue-type').value,
-                        description: document.getElementById('description').value,
-                        contact: document.getElementById('contact').value
-                    })
+                    body: JSON.stringify({ type, description, contact })
                 });
 
+                const data = await response.json();
+
                 if (!response.ok) {
-                    throw new Error('Failed to send report');
+                    throw new Error(data.error || data.message || 'Gagal mengirim laporan');
                 }
 
                 document.getElementById('success-modal').classList.remove('hidden');
                 this.reset();
             } catch (error) {
                 console.error('Error:', error);
-                alert('Gagal mengirim laporan. Silakan coba lagi.');
+                alert(error.message || 'Gagal mengirim laporan. Silakan coba lagi.');
             } finally {
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalText;
