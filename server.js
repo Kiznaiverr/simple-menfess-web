@@ -90,6 +90,10 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views/admin/login.html'));
 });
 
+app.get('/support', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views/support.html'));
+});
+
 // Dashboard
 app.get('/dashboard', (req, res) => {
     const dashboardPath = path.join(process.cwd(), 'views', 'admin', 'dashboard.html');
