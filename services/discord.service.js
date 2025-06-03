@@ -37,15 +37,15 @@ class DiscordService {
                 embeds: [{
                     title: `${config.emoji} New ${config.title}`,
                     color: config.color,
-                    description: `**${data.description}**`,  
+                    description: `**${data.description}**`,
                     fields: [
                         {
-                            name: '📱 Contact Information',
-                            value: data.contact ? `📧 ${data.contact}` : '_No contact provided_',
+                            name: 'Contact',
+                            value: data.contact ? `${getContactIcon(data.contactType)} ${data.contact}` : '_No contact provided_',
                             inline: true
                         },
                         {
-                            name: '⏰ Submitted',
+                            name: 'Submitted',
                             value: `<t:${Math.floor(Date.now() / 1000)}:R>`,
                             inline: true
                         }
@@ -76,6 +76,16 @@ class DiscordService {
             throw error;
         }
     }
+}
+
+function getContactIcon(type) {
+    const icons = {
+        email: '📧',
+        whatsapp: '📱',
+        discord: '📱',
+        telegram: '📱'
+    };
+    return icons[type] || '📱';
 }
 
 // Create singleton instance with error handling
