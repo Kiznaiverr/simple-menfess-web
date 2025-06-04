@@ -1,0 +1,126 @@
+/* Support Page Specific Styles */
+.support-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(to bottom right, #ffffff, #fafafa);
+}
+
+.support-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -5px rgba(79, 70, 229, 0.15);
+}
+
+.support-header {
+    background-size: 300% 300%;
+    animation: gradientBG 15s ease infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+.support-header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.contact-input {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.contact-input:focus-within {
+    transform: scale(1.02);
+}
+
+/* Issue Type Select Styling */
+#issue-type, #contact-type {
+    background-image: linear-gradient(to right, #f0f0f0, #ffffff);
+    transition: all 0.3s ease;
+}
+
+#issue-type:hover, #contact-type:hover {
+    background-image: linear-gradient(to right, #f5f3ff, #ffffff);
+    border-color: #818cf8;
+}
+
+/* FAQ Items Enhanced */
+.faq-item {
+    transition: all 0.4s ease;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.faq-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #818cf8, #6366f1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.faq-item:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.03));
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(4px);
+}
+
+.faq-item:hover::before {
+    opacity: 1;
+}
+
+/* Submit Button Enhancement */
+.submit-button {
+    background-image: linear-gradient(135deg, #6366f1, #818cf8, #8b5cf6);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+}
+
+/* Contact Type Icons with Gradient */
+.contact-type-icon {
+    font-size: 1.2em;
+    margin-right: 0.5em;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.email-icon { background-image: linear-gradient(45deg, #EA4335, #FBBC05); }
+.whatsapp-icon { background-image: linear-gradient(45deg, #25D366, #128C7E); }
+.discord-icon { background-image: linear-gradient(45deg, #5865F2, #7289DA); }
+.telegram-icon { background-image: linear-gradient(45deg, #0088cc, #33a9dc); }
+
+/* Animations */
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+/* Success Modal Enhancement */
+.modal-content {
+    animation: modalPop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #ffffff, #fafafa);
+}
+
+@keyframes modalPop {
+    0% { transform: scale(0.95); opacity: 0; }
+    70% { transform: scale(1.02); }
+    100% { transform: scale(1); opacity: 1; }
+}
