@@ -136,6 +136,7 @@
         </div>
     </div>
 
+    <script src="/assets/js/api.service.js"></script>
     <script>
         document.getElementById('support-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -155,23 +156,10 @@
                     throw new Error('Deskripsi harus diisi');
                 }
 
-                const response = await fetch('/api/support', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        type, 
-                        description, 
-                        contact,
-                        contactType 
-                    })
-                });
+                const result = await apiService.submitSupport(type, description, contact, contactType);
 
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || data.message || 'Gagal mengirim laporan');
+                if (!result.success) {
+                    throw new Error(result.error || 'Gagal mengirim laporan');
                 }
 
                 document.getElementById('success-modal').classList.remove('hidden');

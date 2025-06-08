@@ -67,21 +67,25 @@ function displayMessages(messages) {
 
 async function loadMessages() {
     try {
-        const response = await fetch('/api/messages');
-        if (!response.ok) {
-            if (response.status === 503) {
+        const result = await apiService.getMessages();
+        
+        if (!result.success) {
+            if (result.error.includes('Connection error') || result.error.includes('503')) {
                 showErrorPopup(`Connection error. Retrying in 5 seconds...`);
                 setTimeout(loadMessages, 5000);
                 return;
             }
-            throw new Error('Network response was not ok');
+            throw new Error(result.error);
         }
-        const data = await response.json();
+
+        const data = result.data;
         if (!data || !data.messages) throw new Error('Invalid data format');
+        
         const sortedMessages = data.messages.sort((a, b) => 
             new Date(b.timestamp) - new Date(a.timestamp)
         );
         const recentMessages = sortedMessages.slice(0, 6);
+        
         if (recentMessages.length > 0) {
             lastDisplayedMessages = recentMessages;
             displayMessages(recentMessages);
@@ -99,29 +103,24 @@ async function loadMessages() {
 // Kirim pesan anonim
 async function sendMessage(recipient, message) {
     try {
-        const response = await fetch('/api/messages', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ recipient, message })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            if (response.status === 400) {
-                showBadWordError(data.error || 'Invalid message content');
+        const result = await apiService.sendMessage(recipient, message);
+        
+        if (!result.success) {
+            if (result.response?.status === 400) {
+                showBadWordError(result.error || 'Invalid message content');
                 return false;
             }
-            if (response.status === 429) {
-                if (data.redirect) {
-                    window.location.href = data.redirect;
+            if (result.response?.status === 429) {
+                if (result.data?.redirect) {
+                    window.location.href = result.data.redirect;
                     return false;
                 }
-                showRateLimitError(data.error);
+                showRateLimitError(result.error);
                 return false;
             }
-            throw new Error('Failed to send message');
+            throw new Error(result.error);
         }
+        
         await loadMessages();
         return true;
     } catch (error) {

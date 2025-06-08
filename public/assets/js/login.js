@@ -1,16 +1,7 @@
 async function verifyPassword(password) {
     try {
-        const response = await fetch('/api/verify-admin', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password })
-        });
-        const data = await response.json();
-        if (data.valid && data.token) {
-            localStorage.setItem('adminToken', data.token);
-            return true;
-        }
-        return false;
+        const result = await apiService.verifyAdmin(password);
+        return result.success && result.data.valid && result.data.token;
     } catch {
         return false;
     }

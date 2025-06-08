@@ -7,9 +7,13 @@ const messageState = {
 
 async function loadMessages() {
     try {
-        const response = await fetch('/api/messages');
-        const data = await response.json();
-        messageState.items = data.messages;
+        const result = await apiService.getMessages();
+        
+        if (!result.success) {
+            throw new Error(result.error);
+        }
+        
+        messageState.items = result.data.messages;
         filterAndDisplayMessages();
     } catch (error) {
         console.error('Error loading messages:', error);
@@ -247,13 +251,9 @@ async function submitReport(event, id) {
     if (!reason) return;
     
     try {
-        const response = await fetch(`/api/messages/${id}/report`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reason })
-        });
+        const result = await apiService.reportMessage(id, reason);
 
-        if (response.ok) {
+        if (result.success) {
             const notification = document.createElement('div');
             notification.className = 'fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg z-50';
             notification.innerHTML = `
