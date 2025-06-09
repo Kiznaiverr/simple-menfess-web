@@ -4,9 +4,12 @@
     background: linear-gradient(to bottom right, #ffffff, #fafafa);
 }
 
-.support-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -5px rgba(79, 70, 229, 0.15);
+/* Mobile-first responsive design */
+@media (min-width: 768px) {
+    .support-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -5px rgba(79, 70, 229, 0.15);
+    }
 }
 
 .support-header {
@@ -29,19 +32,26 @@
     transition: all 0.3s ease;
 }
 
-.contact-input:focus-within {
-    transform: scale(1.02);
+/* Mobile touch optimization */
+@media (min-width: 768px) {
+    .contact-input:focus-within {
+        transform: scale(1.02);
+    }
 }
 
 /* Issue Type Select Styling */
 #issue-type, #contact-type {
     background-image: linear-gradient(to right, #f0f0f0, #ffffff);
     transition: all 0.3s ease;
+    /* Improve touch targets on mobile */
+    min-height: 44px;
 }
 
-#issue-type:hover, #contact-type:hover {
-    background-image: linear-gradient(to right, #f5f3ff, #ffffff);
-    border-color: #818cf8;
+@media (min-width: 768px) {
+    #issue-type:hover, #contact-type:hover {
+        background-image: linear-gradient(to right, #f5f3ff, #ffffff);
+        border-color: #818cf8;
+    }
 }
 
 /* FAQ Items Enhanced */
@@ -50,6 +60,11 @@
     border: 1px solid rgba(99, 102, 241, 0.1);
     position: relative;
     overflow: hidden;
+    /* Better touch targets */
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .faq-item::before {
@@ -64,14 +79,25 @@
     transition: opacity 0.3s ease;
 }
 
-.faq-item:hover {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.03));
-    border-color: rgba(99, 102, 241, 0.3);
-    transform: translateX(4px);
+/* Only apply hover effects on larger screens */
+@media (min-width: 768px) {
+    .faq-item:hover {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.03));
+        border-color: rgba(99, 102, 241, 0.3);
+        transform: translateX(4px);
+    }
+
+    .faq-item:hover::before {
+        opacity: 1;
+    }
 }
 
-.faq-item:hover::before {
-    opacity: 1;
+/* Mobile tap feedback */
+@media (max-width: 767px) {
+    .faq-item:active {
+        background: rgba(99, 102, 241, 0.05);
+        transform: scale(0.98);
+    }
 }
 
 /* Submit Button Enhancement */
@@ -80,11 +106,34 @@
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all 0.3s ease;
+    /* Better touch target */
+    min-height: 48px;
 }
 
-.submit-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+@media (min-width: 768px) {
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+    }
+}
+
+/* Mobile tap feedback */
+@media (max-width: 767px) {
+    .submit-button:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Form inputs mobile optimization */
+input, textarea, select {
+    /* Prevent zoom on iOS */
+    font-size: 16px;
+}
+
+@media (min-width: 768px) {
+    input, textarea, select {
+        font-size: inherit;
+    }
 }
 
 /* Contact Type Icons with Gradient */
@@ -123,4 +172,40 @@
     0% { transform: scale(0.95); opacity: 0; }
     70% { transform: scale(1.02); }
     100% { transform: scale(1); opacity: 1; }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+    /* Reduce animations on mobile for better performance */
+    .support-card {
+        transition: none;
+    }
+    
+    /* Better spacing for small screens */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Improve button touch targets */
+    button, .btn, a[role="button"] {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    .support-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .support-card {
+        padding: 1rem;
+    }
+    
+    /* Stack form elements with more space */
+    form .space-y-4 > * + * {
+        margin-top: 1rem;
+    }
 }

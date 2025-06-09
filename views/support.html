@@ -12,23 +12,23 @@
     <div class="min-h-screen flex flex-col">
         <!-- Header -->
         <header class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-6">
+            <div class="container mx-auto px-4 py-4 md:py-6">
                 <div class="flex justify-between items-center">
                     <a href="/" class="flex items-center space-x-2 hover:opacity-80 transition">
-                        <i class="fas fa-paper-plane text-2xl"></i>
+                        <i class="fas fa-paper-plane text-xl md:text-2xl"></i>
                         <div class="flex items-center">
-                            <h1 class="text-2xl font-bold">UMNUfes</h1>
-                            <span class="text-xs bg-white/20 text-white px-1.5 py-0.5 rounded ml-1 font-medium">BETA</span>
+                            <h1 class="text-lg md:text-2xl font-bold">UMNUfes</h1>
+                            <span class="text-xs bg-white/20 text-white px-1 md:px-1.5 py-0.5 rounded ml-1 font-medium">BETA</span>
                         </div>
                     </a>
-                    <div class="flex items-center space-x-4">
-                        <a href="/" class="px-4 py-2 rounded-lg hover:bg-white/10 transition">
+                    <div class="flex items-center space-x-2 md:space-x-4">
+                        <a href="/" class="px-2 md:px-4 py-2 rounded-lg hover:bg-white/10 transition text-sm md:text-base">
                             <i class="fas fa-home"></i>
-                            <span class="ml-2">Beranda</span>
+                            <span class="ml-1 md:ml-2 hidden sm:inline">Beranda</span>
                         </a>
-                        <a href="/explore" class="px-4 py-2 rounded-lg hover:bg-white/10 transition">
+                        <a href="/explore" class="px-2 md:px-4 py-2 rounded-lg hover:bg-white/10 transition text-sm md:text-base">
                             <i class="fas fa-compass"></i>
-                            <span class="ml-2">Jelajahi</span>
+                            <span class="ml-1 md:ml-2 hidden sm:inline">Jelajahi</span>
                         </a>
                     </div>
                 </div>
@@ -36,26 +36,26 @@
         </header>
 
         <!-- Main Content -->
-        <main class="container mx-auto px-4 py-8 flex-grow">
+        <main class="container mx-auto px-4 py-6 md:py-8 flex-grow">
             <div class="max-w-3xl mx-auto">
                 <!-- Header Card -->
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-2xl p-8 text-white support-header">
-                    <h1 class="text-3xl md:text-4xl font-bold mb-4">Pusat Bantuan</h1>
-                    <p class="text-indigo-100">Temukan bantuan dan laporkan masalah</p>
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-2xl p-6 md:p-8 text-white support-header">
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4">Pusat Bantuan</h1>
+                    <p class="text-indigo-100 text-sm md:text-base">Temukan bantuan dan laporkan masalah</p>
                 </div>
 
                 <!-- Content Card -->
-                <div class="bg-white rounded-b-2xl shadow-lg p-8 support-card">
+                <div class="bg-white rounded-b-2xl shadow-lg p-6 md:p-8 support-card">
                     <!-- Report Issue Section -->
-                    <section class="mb-12">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-                            <i class="fas fa-flag text-indigo-600 mr-3"></i>
+                    <section class="mb-8 md:mb-12">
+                        <h2 class="text-xl md:text-2xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center">
+                            <i class="fas fa-flag text-indigo-600 mr-2 md:mr-3 text-lg md:text-xl"></i>
                             Laporkan Masalah
                         </h2>
-                        <form id="support-form" class="space-y-6">
+                        <form id="support-form" class="space-y-4 md:space-y-6">
                             <div>
                                 <label for="issue-type" class="block text-sm font-medium text-gray-700 mb-2">Jenis Masalah</label>
-                                <select id="issue-type" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <select id="issue-type" class="w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm md:text-base">
                                     <option value="bug">Bug / Error</option>
                                     <option value="feature">Saran Fitur</option>
                                     <option value="content">Masalah Konten</option>
@@ -64,23 +64,23 @@
                             </div>
                             <div>
                                 <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                                <textarea id="description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none" 
+                                <textarea id="description" rows="4" class="w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none text-sm md:text-base" 
                                     placeholder="Jelaskan masalah yang Anda temui..."></textarea>
                             </div>
                             <div>
                                 <label for="contact-type" class="block text-sm font-medium text-gray-700 mb-2">Metode Kontak</label>
-                                <select id="contact-type" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent mb-3">
-                                    <option value="email"><i class="fas fa-envelope contact-type-icon email-icon"></i> Email</option>
-                                    <option value="whatsapp"><i class="fab fa-whatsapp contact-type-icon whatsapp-icon"></i> WhatsApp</option>
-                                    <option value="discord"><i class="fab fa-discord contact-type-icon discord-icon"></i> Discord</option>
-                                    <option value="telegram"><i class="fab fa-telegram contact-type-icon telegram-icon"></i> Telegram</option>
+                                <select id="contact-type" class="w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent mb-3 text-sm md:text-base">
+                                    <option value="email">Email</option>
+                                    <option value="whatsapp">WhatsApp</option>
+                                    <option value="discord">Discord</option>
+                                    <option value="telegram">Telegram</option>
                                 </select>
                                 <div class="contact-input">
-                                    <input type="text" id="contact" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                                    <input type="text" id="contact" class="w-full px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm md:text-base" 
                                         placeholder="Masukkan kontak Anda...">
                                 </div>
                             </div>
-                            <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all duration-200 submit-button">
+                            <button type="submit" class="w-full px-4 md:px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all duration-200 submit-button text-sm md:text-base">
                                 <i class="fas fa-paper-plane"></i>
                                 <span>Kirim Laporan</span>
                             </button>
@@ -89,22 +89,22 @@
 
                     <!-- FAQ Section -->
                     <section>
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-                            <i class="fas fa-question-circle text-purple-600 mr-3"></i>
+                        <h2 class="text-xl md:text-2xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center">
+                            <i class="fas fa-question-circle text-purple-600 mr-2 md:mr-3 text-lg md:text-xl"></i>
                             Pertanyaan Umum
                         </h2>
-                        <div class="space-y-4">
-                            <div class="faq-item border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                                <h3 class="font-medium text-gray-900 mb-2">Apakah pesan benar-benar anonim?</h3>
-                                <p class="text-gray-600">Ya, semua pesan yang dikirim bersifat anonim. Kami tidak menyimpan informasi pengirim.</p>
+                        <div class="space-y-3 md:space-y-4">
+                            <div class="faq-item border border-gray-200 rounded-xl p-3 md:p-4 hover:bg-gray-50 transition-colors">
+                                <h3 class="font-medium text-gray-900 mb-2 text-sm md:text-base">Apakah pesan benar-benar anonim?</h3>
+                                <p class="text-gray-600 text-xs md:text-sm">Ya, semua pesan yang dikirim bersifat anonim. Kami tidak menyimpan informasi pengirim.</p>
                             </div>
-                            <div class="faq-item border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                                <h3 class="font-medium text-gray-900 mb-2">Berapa lama pesan disimpan?</h3>
-                                <p class="text-gray-600">Selama web ini masih bisa diakses maka pesan masih tersimpan, kecuali pesanmu dihapus oleh admin.</p>
+                            <div class="faq-item border border-gray-200 rounded-xl p-3 md:p-4 hover:bg-gray-50 transition-colors">
+                                <h3 class="font-medium text-gray-900 mb-2 text-sm md:text-base">Berapa lama pesan disimpan?</h3>
+                                <p class="text-gray-600 text-xs md:text-sm">Selama web ini masih bisa diakses maka pesan masih tersimpan, kecuali pesanmu dihapus oleh admin.</p>
                             </div>
-                            <div class="faq-item border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                                <h3 class="font-medium text-gray-900 mb-2">Bagaimana cara melaporkan pesan?</h3>
-                                <p class="text-gray-600">Klik tombol "Report" pada pesan yang ingin dilaporkan dan ikuti instruksi yang ada.</p>
+                            <div class="faq-item border border-gray-200 rounded-xl p-3 md:p-4 hover:bg-gray-50 transition-colors">
+                                <h3 class="font-medium text-gray-900 mb-2 text-sm md:text-base">Bagaimana cara melaporkan pesan?</h3>
+                                <p class="text-gray-600 text-xs md:text-sm">Klik tombol "Report" pada pesan yang ingin dilaporkan dan ikuti instruksi yang ada.</p>
                             </div>
                         </div>
                     </section>
@@ -113,8 +113,8 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white border-t mt-8 py-8">
-            <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+        <footer class="bg-white border-t mt-6 md:mt-8 py-6 md:py-8">
+            <div class="container mx-auto px-4 text-center text-gray-500 text-xs md:text-sm">
                 © <script>document.write(new Date().getFullYear())</script> UMNUfes. All rights reserved.
             </div>
         </footer>
@@ -122,14 +122,14 @@
 
     <!-- Success Modal -->
     <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="modal-content bg-white rounded-xl p-6 max-w-md w-full mx-4">
+        <div class="modal-content bg-white rounded-xl p-4 md:p-6 max-w-md w-full mx-4">
             <div class="text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                    <i class="fas fa-check text-green-600 text-xl"></i>
+                <div class="mx-auto flex items-center justify-center h-10 w-10 md:h-12 md:w-12 rounded-full bg-green-100 mb-3 md:mb-4">
+                    <i class="fas fa-check text-green-600 text-lg md:text-xl"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Laporan Terkirim!</h3>
-                <p class="text-gray-500 mb-6">Terima kasih atas laporan Anda. Kami akan segera menindaklanjuti.</p>
-                <button onclick="closeModal()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                <h3 class="text-base md:text-lg font-medium text-gray-900 mb-2">Laporan Terkirim!</h3>
+                <p class="text-gray-500 mb-4 md:mb-6 text-sm md:text-base">Terima kasih atas laporan Anda. Kami akan segera menindaklanjuti.</p>
+                <button onclick="closeModal()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm md:text-base">
                     Tutup
                 </button>
             </div>
