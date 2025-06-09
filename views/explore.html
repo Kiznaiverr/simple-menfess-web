@@ -11,30 +11,30 @@
 <body class="min-h-screen flex flex-col">
     <!-- Header -->
     <header class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-4">
+        <div class="container mx-auto px-4 py-3 md:py-4">
             <div class="flex flex-wrap justify-between items-center">
                 <a href="/" class="flex items-center space-x-2 hover:opacity-80 transition">
-                    <i class="fas fa-paper-plane text-2xl"></i>
+                    <i class="fas fa-paper-plane text-lg md:text-2xl"></i>
                     <div class="flex items-center">
-                        <h1 class="text-2xl font-bold">UMNUfes</h1>
-                        <span class="text-xs bg-white/20 text-white px-1.5 py-0.5 rounded ml-1 font-medium">BETA</span>
+                        <h1 class="text-lg md:text-2xl font-bold">UMNUfes</h1>
+                        <span class="text-xs bg-white/20 text-white px-1 md:px-1.5 py-0.5 rounded ml-1 font-medium">BETA</span>
                     </div>
                 </a>
                 <div class="flex items-center md:hidden">
-                    <button id="mobile-menu-button" class="text-white p-2">
-                        <i class="fas fa-bars text-2xl"></i>
+                    <button id="mobile-menu-button" class="text-white p-2 rounded-lg hover:bg-white/10 transition">
+                        <i class="fas fa-bars text-lg md:text-2xl"></i>
                     </button>
                 </div>
-                <div id="nav-links" class="hidden w-full md:flex md:w-auto md:items-center space-x-4 mt-4 md:mt-0">
-                    <a href="/" class="block py-2 md:py-0 px-4 rounded-lg hover:bg-white/10 transition">
+                <div id="nav-links" class="hidden w-full md:flex md:w-auto md:items-center space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
+                    <a href="/" class="block py-2 md:py-0 px-3 md:px-4 rounded-lg hover:bg-white/10 transition text-sm md:text-base">
                         <i class="fas fa-home"></i>
                         <span class="ml-2">Beranda</span>
                     </a>
-                    <a href="/explore" class="block py-2 md:py-0 px-4 bg-white/10 rounded-lg">
+                    <a href="/explore" class="block py-2 md:py-0 px-3 md:px-4 bg-white/10 rounded-lg text-sm md:text-base">
                         <i class="fas fa-compass"></i>
                         <span class="ml-2">Jelajahi</span>
                     </a>
-                    <a href="/support" class="block py-2 md:py-0 px-4 rounded-lg hover:bg-white/10 transition">
+                    <a href="/support" class="block py-2 md:py-0 px-3 md:px-4 rounded-lg hover:bg-white/10 transition text-sm md:text-base">
                         <i class="fas fa-headset"></i>
                         <span class="ml-2">Support</span>
                     </a>
@@ -43,28 +43,28 @@
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8 flex-grow">
+    <main class="container mx-auto px-4 py-6 md:py-8 flex-grow">
         <!-- Search and Filter Section -->
-        <div class="max-w-4xl mx-auto mb-8">
+        <div class="max-w-4xl mx-auto mb-6 md:mb-8">
             <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
-                <div class="flex flex-col md:flex-row gap-4 search-filters">
+                <div class="flex flex-col gap-3 md:gap-4 search-filters">
                     <div class="flex-1">
                         <div class="relative">
                             <input type="text" id="search-messages" 
-                                class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                class="w-full pl-8 md:pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm md:text-base"
                                 placeholder="Cari pesan...">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
+                            <div class="absolute inset-y-0 left-0 pl-2 md:pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400 text-sm md:text-base"></i>
                             </div>
                         </div>
                     </div>
                     <div class="flex gap-2 md:gap-4">
                         <input type="date" id="date-filter" 
-                            class="px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            class="flex-1 md:flex-none px-2 md:px-3 lg:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm md:text-base">
                         <button id="sort-date" 
-                            class="flex items-center space-x-2 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            <i class="fas fa-sort-amount-down"></i>
-                            <span class="hidden md:inline">Urutkan</span>
+                            class="flex items-center justify-center space-x-1 md:space-x-2 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm md:text-base min-w-[44px]">
+                            <i class="fas fa-sort-amount-down text-sm md:text-base"></i>
+                            <span class="hidden lg:inline">Urutkan</span>
                         </button>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
         </div>
 
         <!-- Messages Grid -->
-        <div id="messages-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto">
+        <div id="messages-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
             <!-- Message Card Template -->
             <template id="message-template">
                 <div class="message-card bg-white rounded-xl shadow-md overflow-hidden">
@@ -117,22 +117,22 @@
         </div>
 
         <!-- No Results -->
-        <div id="no-messages" class="hidden text-center py-12">
-            <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
-            <h4 class="text-xl font-medium text-gray-500">Tidak ada pesan ditemukan</h4>
-            <p class="text-gray-400">Coba sesuaikan kriteria pencarian</p>
+        <div id="no-messages" class="hidden text-center py-8 md:py-12">
+            <i class="fas fa-search text-4xl md:text-5xl text-gray-300 mb-3 md:mb-4"></i>
+            <h4 class="text-lg md:text-xl font-medium text-gray-500">Tidak ada pesan ditemukan</h4>
+            <p class="text-sm md:text-base text-gray-400">Coba sesuaikan kriteria pencarian</p>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-50 border-t mt-auto py-8">
+    <footer class="bg-gray-50 border-t mt-auto py-6 md:py-8">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center space-x-2 mb-4 md:mb-0">
-                    <i class="fas fa-paper-plane text-xl text-indigo-600"></i>
-                    <span class="text-gray-700 font-medium">UMNUfes</span>
+                    <i class="fas fa-paper-plane text-lg md:text-xl text-indigo-600"></i>
+                    <span class="text-gray-700 font-medium text-sm md:text-base">UMNUfes</span>
                 </div>
-                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                <div class="flex items-center space-x-4 text-xs md:text-sm text-gray-500">
                     <span>© <script>document.write(new Date().getFullYear())</script> UMNUfes</span>
                 </div>
             </div>
